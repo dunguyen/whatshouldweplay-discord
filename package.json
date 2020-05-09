@@ -1,0 +1,32 @@
+{
+  "name": "whatshouldweplay-discord",
+  "version": "1.0.0",
+  "description": "Discord bot for whatshouldweplay.io",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "tsc && node ./dist/index.js",
+    "build": "rimraf dist && tsc",
+    "build:watch": "onchange 'src/**/*.ts' -- npm run build",
+    "dev": "nodemon --exec ts-node ./src/index.ts --watch src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dunguyen/whatshouldweplay-discord.git"
+  },
+  "author": "Du Nguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dunguyen/whatshouldweplay-discord/issues"
+  },
+  "homepage": "https://github.com/dunguyen/whatshouldweplay-discord#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.1",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.3.0",
+    "typescript": "^3.8.3"
+  }
+}
