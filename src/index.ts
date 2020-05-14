@@ -1,17 +1,38 @@
 import * as Discord from 'discord.js';
-import winston from 'winston';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+
+import logger from './util/logger';
+import { getGameModel } from './models/game';
 
 dotenv.config();
 
+if (!process.env.MONGO_URI) {
+    logger.error('Missing Mongo URI')
+}
+
+mongoose
+        .connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useCreateIndex: true,
+            useUnifiedTopology: true,
+        })
+        .then(() => {
+            /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
+        })
+        .catch((err) => {
+            logger.error(
+                'MongoDB connection error. Please make sure MongoDB is running. ' +
+                    err
+            );
+        });
+
+const Game = getGameModel();
+Game.find({}, (error, result) => {
+    logger.debug(`Games in database: ${result.length}`);
+});
+
 const client = new Discord.Client();
-const logger = winston.createLogger({
-    level: 'debug',
-    format: winston.format.json(),
-    transports: [
-        new winston.transports.Console({level: 'debug'})
-    ]
-})
 
 client.on('ready', () => {
     logger.info('Bot is ready!');
