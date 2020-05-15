@@ -34,6 +34,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "eslint-plugin-import": "^2.20.2",
