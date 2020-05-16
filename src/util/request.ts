@@ -1,13 +1,7 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
 
+import { STEAM_API_KEY } from './config';
 import logger from './logger';
-
-dotenv.config();
-if (!process.env.STEAM_API_KEY) {
-    logger.error('Missing Steam API key');
-}
-const STEAM_API_KEY = process.env.STEAM_API_KEY;
 
 export async function getSteamId(username: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {

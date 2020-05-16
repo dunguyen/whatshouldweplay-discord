@@ -1,19 +1,13 @@
 import * as Discord from 'discord.js';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 import logger from './util/logger';
 import { getGameModel } from './models/game';
 import { getSteamId, getOwnedSteamGames } from './util/request';
-
-dotenv.config();
-
-if (!process.env.MONGO_URI) {
-    logger.error('Missing Mongo URI');
-}
+import { MONGO_URI, DISCORD_TOKEN } from './util/config';
 
 mongoose
-    .connect(process.env.MONGO_URI, {
+    .connect(MONGO_URI, {
         useNewUrlParser: true,
         useCreateIndex: true,
         useUnifiedTopology: true,
@@ -35,7 +29,7 @@ Game.countDocuments({}, (error, result) => {
 
 const client = new Discord.Client();
 
-client.on('ready', () => {
+client.once('ready', () => {
     logger.info('Bot is ready!');
     client.user.setPresence({
         status: 'online',
@@ -140,9 +134,13 @@ client.on('message', async (message) => {
                         `Number of games above threshold: ${gameList.length}`
                     );
 
-                    gameList.sort((a, b) => b.occurrences - a.occurrences).slice(0, 25);
+                    gameList.sort((a, b) => b.occurrences - a.occurrences).slice(0, 20);
                     logger.info(gameList)
                     gameList.forEach((gameListEntry) => {
+                        if(msg.length > 1800) {
+                            message.channel.send(msg);
+                            msg = ``;
+                        }
                         msg += `\n ${gameListEntry.occurrences}\t${gameListEntry.name}`;
                     });
 
@@ -157,8 +155,4 @@ client.on('message', async (message) => {
     }
 });
 
-if (!process.env.DISCORD_TOKEN) {
-    logger.error('No token for Discord');
-}
-
-client.login(process.env.DISCORD_TOKEN);
+client.login(DISCORD_TOKEN);
