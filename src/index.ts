@@ -3,8 +3,11 @@ import mongoose from 'mongoose';
 
 import logger from './util/logger';
 import { getGameModel } from './models/game';
-import { getSteamId, getOwnedSteamGames } from './util/request';
 import { MONGO_URI, DISCORD_TOKEN } from './util/config';
+import {HelpCommand} from './commands/help';
+import {PlayCommand} from './commands/play';
+import { ICommand } from './types/ICommand';
+
 
 mongoose
     .connect(MONGO_URI, {
@@ -28,13 +31,19 @@ Game.countDocuments({}, (error, result) => {
 });
 
 const client = new Discord.Client();
+const commands = new Discord.Collection<string, ICommand>();
+const helpCommand = new HelpCommand()
+const playCommand = new PlayCommand();
+commands.set(helpCommand.name, helpCommand);
+commands.set(playCommand.name, playCommand);
+const prefix = 'wswp';
 
 client.once('ready', () => {
     logger.info('Bot is ready!');
     client.user.setPresence({
         status: 'online',
         activity: {
-            name: 'Type "wswp" for help',
+            name: 'Type "wswp help" for help',
             type: 'PLAYING',
         },
     });
@@ -47,112 +56,30 @@ client.on('message', async (message) => {
         return;
     }
 
-    if (message.author === client.user) {
-        return;
-    }
-
     if (message.author.username === 'Chritarn') {
         message.react('🍉');
     }
 
-    const messageContent = message.toString().toLowerCase();
-    const keyword = 'wswp';
-
-    if (messageContent === keyword) {
-        const msg =
-            `What Should We Play helps you find the next multiplayer games that you can play with your friends.\n` +
-            'To use What Should We Play, type wswp followed by following commands:\n' +
-            `- "play" followed by the steam usernames or ids separated with a space\n` +
-            `Example: wswp play <steam username> <steam username>`;
-        message.reply(msg);
+    if (!message.content.startsWith(prefix) || message.author.bot) {
         return;
     }
 
-    if (messageContent.startsWith(keyword)) {
-        const args = messageContent.split(' ');
-        logger.debug(args);
+    const args = message.content.split(/ +/).slice(1);
+    const command = args.shift().toLowerCase();
 
-        if (args[1] === 'play') {
-            const steamUsernames = args.slice(2);
-            const ids = await Promise.all(
-                steamUsernames.map((username) => {
-                    return getSteamId(username);
-                })
-            );
-
-            const gameLists = await Promise.all(
-                ids.map((id) => {
-                    return getOwnedSteamGames(id);
-                })
-            );
-
-            const commonGames = {} as { [gameId: number]: number };
-
-            gameLists.forEach((gameList) => {
-                gameList.steamAppIds.forEach((gameId) => {
-                    if (commonGames[gameId]) {
-                        commonGames[gameId] = commonGames[gameId] + 1;
-                    } else {
-                        commonGames[gameId] = 1;
-                    }
-                });
-            });
-
-            Game.find(
-                {
-                    steamAppId: { $in: Object.keys(commonGames).map(Number) },
-                    type: 'game',
-                    'categories.description': 'Multi-player',
-                },
-                (error, result) => {
-                    if (error) {
-                        logger.error(error);
-                        return message.reply('An error has occured :(');
-                    }
-                    logger.info(`Number of games found: ${result.length}`);
-                    let msg = `Multi-player games you have in common:\n`;
-                    const threshold = 0.51;
-                    const gameList = result
-                        .filter((game) => {
-                            if (
-                                commonGames[game.steamAppId] /
-                                    steamUsernames.length >
-                                threshold
-                            ) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        })
-                        .map((game) => {
-                            return {
-                                name: game.name,
-                                occurrences: commonGames[game.steamAppId],
-                            };
-                        });
-                    logger.info(
-                        `Number of games above threshold: ${gameList.length}`
-                    );
-
-                    gameList.sort((a, b) => b.occurrences - a.occurrences).slice(0, 20);
-                    logger.info(gameList)
-                    gameList.forEach((gameListEntry) => {
-                        if(msg.length > 1800) {
-                            message.channel.send(msg);
-                            msg = ``;
-                        }
-                        msg += `\n ${gameListEntry.occurrences}\t${gameListEntry.name}`;
-                    });
-
-                    message.channel.send(msg);
-                }
-            );
-
-            const commonGamesResult = Object.keys(commonGames).map((key) => {
-                return { gameId: key, owners: commonGames[key] };
-            });
-        }
+    if (!commands.has(command)) {
+        logger.info(`Command: ${command} not found`)
+        return;
     }
+
+    try {
+        message.channel.startTyping();
+        commands.get(command).execute(message, args);
+        message.channel.stopTyping();
+    } catch (error) {
+        logger.error(error);
+    }
+
 });
 
 client.login(DISCORD_TOKEN);
