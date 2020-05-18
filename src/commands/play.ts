@@ -9,6 +9,8 @@ const Game = getGameModel();
 export class PlayCommand implements ICommand{
     name = 'play';
     description = 'Play';
+    args = true;
+    usage = '<steam username/steam id> <steam username/steam id> <as many usernames/ids you want separated by space>';
     async execute(message: Discord.Message, args: string[]): Promise<void> {
         const ids = await Promise.all(
             args.map((username) => {

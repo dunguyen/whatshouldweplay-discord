@@ -65,16 +65,28 @@ client.on('message', async (message) => {
     }
 
     const args = message.content.split(/ +/).slice(1);
-    const command = args.shift().toLowerCase();
+    const commandName = args.shift().toLowerCase();
 
-    if (!commands.has(command)) {
-        logger.info(`Command: ${command} not found`)
+    if (!commands.has(commandName)) {
+        logger.info(`Command: ${commandName} not found`)
         return;
     }
 
+    const command = commands.get(commandName)
+
     try {
         message.channel.startTyping();
-        commands.get(command).execute(message, args);
+
+        if (command.args && !args.length) {
+            let reply = `You need to provide arguments for the ${commandName} command`;
+
+            if (command.usage) {
+                reply += `\nThe proper usage would be: \`${prefix} ${commandName} ${command.usage}\``;
+            }
+
+            return message.channel.send(reply);
+        }
+        await command.execute(message, args);
         message.channel.stopTyping();
     } catch (error) {
         logger.error(error);
