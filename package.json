@@ -7,7 +7,9 @@
     "start": "tsc && node ./dist/index.js",
     "build": "rimraf dist && tsc",
     "build:watch": "onchange 'src/**/*.ts' -- npm run build",
-    "dev": "nodemon --exec ts-node ./src/index.ts --watch src"
+    "dev": "nodemon --exec ts-node ./src/index.ts --watch src",
+    "lint": "eslint --ext .ts .",
+    "test": ""
   },
   "repository": {
     "type": "git",
