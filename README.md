@@ -1,2 +1,4 @@
-# whatshouldweplay-discord
- Discord bot for whatshouldweplay.io
+# What Should We Play
+
+Discord bot for whatshouldweplay.io
+
