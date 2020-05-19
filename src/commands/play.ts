@@ -6,11 +6,12 @@ import logger from '../util/logger';
 import { getOwnedSteamGames, getSteamId } from '../util/request';
 
 const Game = getGameModel();
-export class PlayCommand implements ICommand{
+export class PlayCommand implements ICommand {
     name = 'play';
     description = 'Play';
     args = true;
-    usage = '<steam username/steam id> <steam username/steam id> <as many usernames/ids you want separated by space>';
+    usage =
+        '<steam username/steam id> <steam username/steam id> <as many usernames/ids you want separated by space>';
     async execute(message: Discord.Message, args: string[]): Promise<void> {
         const ids = await Promise.all(
             args.map((username) => {
@@ -85,9 +86,5 @@ export class PlayCommand implements ICommand{
                 message.channel.send(msg);
             }
         );
-
-        const commonGamesResult = Object.keys(commonGames).map((key) => {
-            return { gameId: key, owners: commonGames[key] };
-        });
-    };
+    }
 }

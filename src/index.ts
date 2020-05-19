@@ -1,13 +1,12 @@
 import * as Discord from 'discord.js';
 import mongoose from 'mongoose';
 
-import logger from './util/logger';
+import { HelpCommand } from './commands/help';
+import { PlayCommand } from './commands/play';
 import { getGameModel } from './models/game';
-import { MONGO_URI, DISCORD_TOKEN } from './util/config';
-import {HelpCommand} from './commands/help';
-import {PlayCommand} from './commands/play';
 import { ICommand } from './types/ICommand';
-
+import { DISCORD_TOKEN, MONGO_URI } from './util/config';
+import logger from './util/logger';
 
 mongoose
     .connect(MONGO_URI, {
@@ -32,7 +31,7 @@ Game.countDocuments({}, (error, result) => {
 
 const client = new Discord.Client();
 const commands = new Discord.Collection<string, ICommand>();
-const helpCommand = new HelpCommand()
+const helpCommand = new HelpCommand();
 const playCommand = new PlayCommand();
 commands.set(helpCommand.name, helpCommand);
 commands.set(playCommand.name, playCommand);
@@ -68,11 +67,11 @@ client.on('message', async (message) => {
     const commandName = args.shift().toLowerCase();
 
     if (!commands.has(commandName)) {
-        logger.info(`Command: ${commandName} not found`)
+        logger.info(`Command: ${commandName} not found`);
         return;
     }
 
-    const command = commands.get(commandName)
+    const command = commands.get(commandName);
 
     try {
         message.channel.startTyping();
@@ -86,12 +85,12 @@ client.on('message', async (message) => {
 
             return message.channel.send(reply);
         }
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await command.execute(message, args);
         message.channel.stopTyping();
     } catch (error) {
         logger.error(error);
     }
-
 });
 
 client.login(DISCORD_TOKEN);

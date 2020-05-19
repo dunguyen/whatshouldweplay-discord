@@ -9,6 +9,7 @@ const options: winston.LoggerOptions = {
     transports: [
         new winston.transports.Console({
             level: 'debug',
+            format: debugLogFormat,
         }),
     ],
 };
@@ -21,6 +22,6 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 logger.debug('Logging initialized at debug level');
-logger.debug(`Node Env is: ${process.env.NODE_ENV}`)
+logger.debug(`Node Env is: ${process.env.NODE_ENV}`);
 
 export default logger;
