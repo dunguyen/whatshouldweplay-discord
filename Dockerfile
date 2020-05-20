@@ -10,7 +10,7 @@ RUN npm install
 COPY . .
 
 # Delete .env
-RUN rm .env
+RUN rm .env -f
 
 # Build
 RUN npm run build
