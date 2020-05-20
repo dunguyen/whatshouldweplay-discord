@@ -12,10 +12,6 @@ cache:
   directories:
     - /node_modules
 
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker build -t whatshouldweplaydiscord:latest .
-
 deploy:
   provider: script
   script: bash docker_push.sh

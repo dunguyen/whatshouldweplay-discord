@@ -1,2 +1,3 @@
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker push dunguyen90/whatshouldweplaydiscord
+docker build -t whatshouldweplaydiscord .
+docker push dunguyen90/whatshouldweplaydiscord:latest
