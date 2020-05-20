@@ -2,9 +2,22 @@ language: node_js
 node_js:
   - 14
 
+services:
+  - docker
+
 script:
   - npm run lint
 
 cache:
   directories:
     - /node_modules
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker build -t whatshouldweplaydiscord:latest .
+
+deploy:
+  provider: script
+  script: bash docker_push.sh
+  on:
+    branch: master
