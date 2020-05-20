@@ -2,13 +2,10 @@
   "compilerOptions": {
       "module": "commonjs",
       "esModuleInterop": true,
-      "target": "ES2019",
+      "target": "es2019",
       "moduleResolution": "node",
       "sourceMap": true,
-      "outDir": "./dist/"
+      "outDir": "dist/"
   },
-  "lib": ["ES2019"],
-  "include": [
-      "./src/**/*.ts"
-  ],
+  "lib": ["es2019"],
 }
