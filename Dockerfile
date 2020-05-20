@@ -9,6 +9,9 @@ RUN npm install
 # Copy source to bot
 COPY . .
 
+# Delete .env
+RUN rm .env
+
 # Build
 RUN npm run build
 

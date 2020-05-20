@@ -22,6 +22,5 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 logger.debug('Logging initialized at debug level');
-logger.debug(`Node Env is: ${process.env.NODE_ENV}`);
 
 export default logger;

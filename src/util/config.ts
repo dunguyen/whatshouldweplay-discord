@@ -21,3 +21,5 @@ if (!process.env.DISCORD_TOKEN) {
 }
 
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+
+logger.debug(`Node Env is: ${process.env.NODE_ENV}`);
