@@ -55,10 +55,6 @@ client.on('message', async (message) => {
         return;
     }
 
-    if (message.author.username === 'Chritarn') {
-        message.react('🍉');
-    }
-
     if (!message.content.startsWith(prefix) || message.author.bot) {
         return;
     }
