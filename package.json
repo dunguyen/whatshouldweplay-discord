@@ -12,7 +12,8 @@
     "test": "jest --watch",
     "test-debug": "jest --runInBand --detectOpenHandles",
     "test-clear-cache": "jest --clearCache",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+    "coverage": "jest --coverage",
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
