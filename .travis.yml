@@ -8,6 +8,7 @@ services:
 script:
   - npm run lint
   - npm run build
+  - npm run coverage
 
 cache:
   directories:
