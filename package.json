@@ -12,7 +12,7 @@
     "test": "jest --watch",
     "test-debug": "jest --runInBand --detectOpenHandles",
     "test-clear-cache": "jest --clearCache",
-    "coverage": "jest --coverage"
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
