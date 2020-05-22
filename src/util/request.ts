@@ -36,7 +36,13 @@ export async function getOwnedSteamGames(
                     if (response.status === 200) {
                         resolve({
                             steamAppIds: response.data.response.games.map(
-                                (game) => parseInt(game.appid, 10)
+                                (game: {
+                                    appid: string;
+                                    playtime_forever: string;
+                                    playtime_windows_forever: string;
+                                    playtime_mac_forever: string;
+                                    playtime_linux_forever: string;
+                                }) => parseInt(game.appid, 10)
                             ),
                             success: true,
                         });
