@@ -8,6 +8,10 @@ services:
 script:
   - npm run lint
   - npm run build
+  - npm run coverage
+
+after_script:
+  - COVERALLS_REPO_TOKEN=$COVERALLS_TOKEN npm run coveralls
 
 cache:
   directories:
