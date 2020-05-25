@@ -4,6 +4,11 @@ import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
 import logger from '../util/logger';
 import { getOwnedSteamGames, getSteamId } from '../util/request';
+import {
+    CONFIG_NUMBER_OF_GAMES_DISPLAYED,
+    CONFIG_COMMON_GAMES_THRESHOLD,
+    CONFIG_SHOW_GAMES_RANDM_ORDER,
+} from '../util/config';
 
 const Game = getGameModel();
 export class PlayCommand implements ICommand {
@@ -49,13 +54,12 @@ export class PlayCommand implements ICommand {
                     return message.reply('An error has occured :(');
                 }
                 logger.info(`Number of games found: ${result.length}`);
-                let msg = `Multi-player games you have in common:\n`;
-                const threshold = 0.51;
+                let msg = `${CONFIG_NUMBER_OF_GAMES_DISPLAYED} Multi-player games you have in common:\n`;
                 const gameList = result
                     .filter((game) => {
                         if (
                             commonGames[game.steamAppId] / args.length >
-                            threshold
+                            CONFIG_COMMON_GAMES_THRESHOLD
                         ) {
                             return true;
                         } else {
@@ -73,8 +77,12 @@ export class PlayCommand implements ICommand {
                 );
 
                 gameList
-                    .sort((a, b) => b.occurrences - a.occurrences)
-                    .slice(0, 20);
+                    .sort((a, b) =>
+                        CONFIG_SHOW_GAMES_RANDM_ORDER
+                            ? 0.5 - Math.random()
+                            : b.occurrences - a.occurrences
+                    )
+                    .splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
                 gameList.forEach((gameListEntry) => {
                     if (msg.length > 1800) {
                         message.channel.send(msg);
