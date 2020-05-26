@@ -8,6 +8,7 @@ import { ICommand } from './types/ICommand';
 import { DISCORD_TOKEN, MONGO_URI } from './util/config';
 import logger from './util/logger';
 import { LinkCommand } from './commands/link';
+import { ShowLinkedCommand } from './commands/showlinked';
 
 mongoose
     .connect(MONGO_URI, {
@@ -36,9 +37,11 @@ const commands = new Discord.Collection<string, ICommand>();
 const helpCommand = new HelpCommand();
 const playCommand = new PlayCommand();
 const linkCommand = new LinkCommand();
+const showLinkedCommand = new ShowLinkedCommand();
 commands.set(helpCommand.name, helpCommand);
 commands.set(playCommand.name, playCommand);
 commands.set(linkCommand.name, linkCommand);
+commands.set(showLinkedCommand.name, showLinkedCommand);
 const prefix = 'wswp';
 
 client.once('ready', () => {
@@ -90,7 +93,8 @@ client.on('message', async (message) => {
         await command.execute(message, args);
         return message.channel.stopTyping();
     } catch (error) {
-        logger.error(error);
+        logger.error(`Error in index.ts`, { error }, { message: message });
+        return message.channel.stopTyping();
     }
 });
 

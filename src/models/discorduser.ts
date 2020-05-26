@@ -6,6 +6,7 @@ export type DiscordUserDocument = mongoose.Document & {
     games: {
         platform: string;
         id: string;
+        gamertag?: string;
         lastUpdated?: Date;
         games: string[];
     }[];
@@ -18,6 +19,7 @@ const DiscordUserSchema = new mongoose.Schema(
             {
                 platform: String,
                 id: String,
+                gamertag: String,
                 lastUpdated: { type: Date, default: Date.now },
                 games: [{ type: Schema.Types.ObjectId, ref: 'Game' }],
             },

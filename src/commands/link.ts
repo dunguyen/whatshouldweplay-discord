@@ -3,7 +3,11 @@ import * as Discord from 'discord.js';
 import { getDiscordUserModel } from '../models/discorduser';
 import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
-import { getOwnedSteamGames, getSteamId } from '../util/request';
+import {
+    getOwnedSteamGames,
+    getSteamId,
+    getSteamGamerTag,
+} from '../util/request';
 import logger from '../util/logger';
 
 const DiscordUserModel = getDiscordUserModel();
@@ -23,7 +27,10 @@ export class LinkCommand implements ICommand {
 
         const id = await getSteamId(username);
 
-        const gameList = await getOwnedSteamGames(id);
+        const [gameList, steamGamerTag] = await Promise.all([
+            getOwnedSteamGames(id),
+            getSteamGamerTag(id),
+        ]);
 
         if (!gameList.success) {
             message.reply(`No steam games found for ${username}`);
@@ -41,6 +48,7 @@ export class LinkCommand implements ICommand {
                 games: {
                     platform: 'steam',
                     id: id,
+                    gamertag: steamGamerTag.steamGamerTag,
                     $currentDate: { lastUpdated: true },
                     games: games.map((game) => {
                         return game.id;
