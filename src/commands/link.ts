@@ -3,12 +3,12 @@ import * as Discord from 'discord.js';
 import { getDiscordUserModel } from '../models/discorduser';
 import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
+import logger from '../util/logger';
 import {
     getOwnedSteamGames,
-    getSteamId,
     getSteamGamerTag,
+    getSteamId,
 } from '../util/request';
-import logger from '../util/logger';
 
 const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();
@@ -42,12 +42,24 @@ export class LinkCommand implements ICommand {
             { _id: 1 }
         );
 
+        const existingLink = await DiscordUserModel.find({
+            discordUserId: message.author.id,
+            'games.platform': 'steam',
+            'games.accountId': id,
+        });
+        if (existingLink.length > 0) {
+            message.reply(
+                'I have already linked this account with your discord.'
+            );
+            return;
+        }
+
         const filter = { discordUserId: message.author.id };
         const update = {
             $push: {
                 games: {
                     platform: 'steam',
-                    id: id,
+                    accountId: id,
                     gamertag: steamGamerTag.steamGamerTag,
                     $currentDate: { lastUpdated: true },
                     games: games.map((game) => {
@@ -56,18 +68,6 @@ export class LinkCommand implements ICommand {
                 },
             },
         };
-
-        const existingLink = await DiscordUserModel.find({
-            discordUserId: message.author.id,
-            'games.platform': 'steam',
-            'games.id': id,
-        });
-        if (existingLink.length > 0) {
-            message.reply(
-                'I have already linked this account with your discord.'
-            );
-            return;
-        }
 
         const result = await DiscordUserModel.findOneAndUpdate(filter, update, {
             new: true,

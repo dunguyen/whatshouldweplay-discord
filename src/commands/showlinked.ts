@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 
 import { getDiscordUserModel } from '../models/discorduser';
 import { ICommand } from '../types/ICommand';
-import { getOwnedSteamGames, getSteamId } from '../util/request';
 import logger from '../util/logger';
 
 const DiscordUserModel = getDiscordUserModel();
@@ -46,7 +45,7 @@ export class ShowLinkedCommand implements ICommand {
                 reply = ``;
             }
             reply += `\n${gameEntry.platform}: ${
-                gameEntry.gamertag ? gameEntry.gamertag : gameEntry.id
+                gameEntry.gamertag ? gameEntry.gamertag : gameEntry.accountId
             }`;
         });
         reply += `\nTo unlink an account, please use the unlink command.`;
