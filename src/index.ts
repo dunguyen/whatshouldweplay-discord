@@ -7,12 +7,14 @@ import { getGameModel } from './models/game';
 import { ICommand } from './types/ICommand';
 import { DISCORD_TOKEN, MONGO_URI } from './util/config';
 import logger from './util/logger';
+import { LinkCommand } from './commands/link';
 
 mongoose
     .connect(MONGO_URI, {
         useNewUrlParser: true,
         useCreateIndex: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
     })
     .then(() => {
         /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
@@ -33,8 +35,10 @@ const client = new Discord.Client();
 const commands = new Discord.Collection<string, ICommand>();
 const helpCommand = new HelpCommand();
 const playCommand = new PlayCommand();
+const linkCommand = new LinkCommand();
 commands.set(helpCommand.name, helpCommand);
 commands.set(playCommand.name, playCommand);
+commands.set(linkCommand.name, linkCommand);
 const prefix = 'wswp';
 
 client.once('ready', () => {
@@ -79,11 +83,12 @@ client.on('message', async (message) => {
                 reply += `\nThe proper usage would be: \`${prefix} ${commandName} ${command.usage}\``;
             }
 
-            return message.channel.send(reply);
+            message.channel.send(reply);
+            return message.channel.stopTyping();
         }
         // eslint-disable-next-line @typescript-eslint/await-thenable
         await command.execute(message, args);
-        message.channel.stopTyping();
+        return message.channel.stopTyping();
     } catch (error) {
         logger.error(error);
     }
