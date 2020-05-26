@@ -2,7 +2,6 @@ import axios from 'axios';
 
 import { STEAM_API_KEY } from './config';
 import logger from './logger';
-import { stringify } from 'querystring';
 
 export async function getSteamId(username: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
