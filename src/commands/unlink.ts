@@ -27,6 +27,13 @@ export class UnlinkCommand implements ICommand {
             );
         });
 
+        if (discordUser.games.length === 0) {
+            await discordUser.remove();
+            message.reply(
+                `Successfully unlinked the account and deleted user as there were no more linked accounts left. You can use link to create a new user.`
+            );
+            return;
+        }
         await discordUser.save();
 
         message.reply(`Successfully unlinked accounts`);

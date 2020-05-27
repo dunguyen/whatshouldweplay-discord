@@ -1,5 +1,6 @@
 import mongoose, { Model, Schema } from 'mongoose';
 import logger from '../util/logger';
+import { GameDocument } from './game';
 
 export type DiscordUserDocument = mongoose.Document & {
     discordUserId: string;
@@ -8,7 +9,7 @@ export type DiscordUserDocument = mongoose.Document & {
         accountId: string;
         gamertag?: string;
         lastUpdated?: Date;
-        games: string[];
+        games: string[] | GameDocument[];
     }[];
 };
 
