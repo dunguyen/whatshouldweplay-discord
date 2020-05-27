@@ -99,6 +99,7 @@ client.on('message', async (message) => {
         logger.error(`Error in index.ts`, { error }, { message: message });
         return message.channel.stopTyping();
     }
+    return message.channel.stopTyping();
 });
 
 client.login(DISCORD_TOKEN);
