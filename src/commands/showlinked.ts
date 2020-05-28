@@ -7,7 +7,7 @@ import logger from '../util/logger';
 const DiscordUserModel = getDiscordUserModel();
 export class ShowLinkedCommand implements ICommand {
     name = 'showlinked';
-    description = 'Show the linked ids for the discord user';
+    description = 'Show the linked ids for your discord user';
     args = false;
     usage = '';
     async execute(message: Discord.Message, args: string[]): Promise<void> {
@@ -40,17 +40,13 @@ export class ShowLinkedCommand implements ICommand {
 
         let reply = `Your linked accounts:`;
         discordUser[0].games.forEach((gameEntry) => {
-            if (reply.length > 1800) {
-                message.reply(reply);
-                reply = ``;
-            }
             reply += `\n${gameEntry.platform}: ${
                 gameEntry.gamertag ? gameEntry.gamertag : gameEntry.accountId
             }`;
         });
         reply += `\nTo unlink an account, please use the unlink command.`;
 
-        message.reply(reply);
+        message.reply(reply, { split: true });
         return;
     }
 }

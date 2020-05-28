@@ -15,10 +15,9 @@ const DiscordUserModel = getDiscordUserModel();
 const Game = getGameModel();
 export class PlayCommand implements ICommand {
     name = 'play';
-    description = 'Play';
+    description = 'Finds multi-player games that you have in common';
     args = true;
-    usage =
-        '<steam username/steam id> <as many usernames/ids you want separated by space> <or @mention people>';
+    usage = '[@mention, steam username, steam id separated by a space]';
     async execute(message: Discord.Message, args: string[]): Promise<void> {
         const discordIds = message.mentions.users.map((discordUser) => {
             return discordUser.id;
@@ -115,13 +114,9 @@ export class PlayCommand implements ICommand {
             )
             .splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
         gameList.forEach((gameListEntry) => {
-            if (msg.length > 1800) {
-                message.channel.send(msg);
-                msg = ``;
-            }
             msg += `\n ${gameListEntry.occurrences}\t${gameListEntry.name}`;
         });
 
-        message.channel.send(msg);
+        message.channel.send(msg, { split: true });
     }
 }

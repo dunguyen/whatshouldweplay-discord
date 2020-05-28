@@ -14,9 +14,10 @@ const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();
 export class LinkCommand implements ICommand {
     name = 'link';
-    description = 'Link the discord user with steam id';
+    description =
+        'Links your discord user with the provided steam id or username';
     args = true;
-    usage = '<steam username/id>';
+    usage = '[steam username/id]';
     async execute(message: Discord.Message, args: string[]): Promise<void> {
         if (args.length !== 1) {
             message.reply('Please provide exactly one steam username or id');

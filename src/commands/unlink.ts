@@ -6,9 +6,9 @@ import { ICommand } from '../types/ICommand';
 const DiscordUserModel = getDiscordUserModel();
 export class UnlinkCommand implements ICommand {
     name = 'unlink';
-    description = 'Unlink the discord user with steam id';
+    description = 'Unlink your discord user with steam id';
     args = true;
-    usage = '<steam gamertag/id> <steam gamertag/id>';
+    usage = '[steam id or steam gamertag from the showlinked command]';
     async execute(message: Discord.Message, args: string[]): Promise<void> {
         if (args.length === 0) {
             message.reply('Please provide at least one steam gamertag or id');
