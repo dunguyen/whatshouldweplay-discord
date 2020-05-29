@@ -1,55 +1,55 @@
 {
-  "name": "whatshouldweplay-discord",
-  "version": "0.0.1",
-  "description": "Discord bot for whatshouldweplay.io",
-  "main": "dist/index.js",
-  "scripts": {
-    "start": "tsc && node ./dist/index.js",
-    "build": "rimraf dist && tsc",
-    "build:watch": "onchange 'src/**/*.ts' -- npm run build",
-    "dev": "nodemon --exec ts-node ./src/index.ts --watch src",
-    "lint": "eslint --ext .ts .",
-    "test": "jest --watch",
-    "test-debug": "jest --runInBand --detectOpenHandles",
-    "test-clear-cache": "jest --clearCache",
-    "coverage": "jest --coverage",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dunguyen/whatshouldweplay-discord.git"
-  },
-  "author": "Du Nguyen",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dunguyen/whatshouldweplay-discord/issues"
-  },
-  "homepage": "https://github.com/dunguyen/whatshouldweplay-discord#readme",
-  "devDependencies": {
-    "@types/jest": "^25.2.3",
-    "@types/mongoose": "^5.7.21",
-    "@types/node": "^14.0.5",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
-    "coveralls": "^3.1.0",
-    "eslint": "^7.1.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.3",
-    "jest": "^26.0.1",
-    "nodemon": "^2.0.4",
-    "prettier": "^2.0.5",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^26.0.0",
-    "ts-node": "^8.10.1",
-    "typescript": "^3.9.3"
-  },
-  "dependencies": {
-    "axios": "^0.19.2",
-    "discord.js": "^12.2.0",
-    "dotenv": "^8.2.0",
-    "mongoose": "^5.9.15",
-    "winston": "^3.2.1"
-  }
+    "name": "whatshouldweplay-discord",
+    "version": "0.0.1",
+    "description": "Discord bot for whatshouldweplay.io",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "tsc && node ./dist/index.js",
+        "build": "rimraf dist && tsc -p tsconfig.production.json",
+        "build:watch": "onchange 'src/**/*.ts' -- npm run build",
+        "dev": "nodemon --exec ts-node ./src/index.ts --watch src",
+        "lint": "eslint --ext .ts .",
+        "test": "jest --watch",
+        "test-debug": "jest --runInBand --detectOpenHandles",
+        "test-clear-cache": "jest --clearCache",
+        "coverage": "jest --coverage",
+        "coveralls": "cat ./coverage/lcov.info | coveralls"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dunguyen/whatshouldweplay-discord.git"
+    },
+    "author": "Du Nguyen",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/dunguyen/whatshouldweplay-discord/issues"
+    },
+    "homepage": "https://github.com/dunguyen/whatshouldweplay-discord#readme",
+    "devDependencies": {
+        "@types/jest": "^25.2.3",
+        "@types/mongoose": "^5.7.21",
+        "@types/node": "^14.0.5",
+        "@typescript-eslint/eslint-plugin": "^2.34.0",
+        "@typescript-eslint/parser": "^2.34.0",
+        "coveralls": "^3.1.0",
+        "eslint": "^7.1.0",
+        "eslint-config-prettier": "^6.11.0",
+        "eslint-plugin-import": "^2.20.2",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^3.1.3",
+        "jest": "^26.0.1",
+        "nodemon": "^2.0.4",
+        "prettier": "^2.0.5",
+        "rimraf": "^3.0.2",
+        "ts-jest": "^26.0.0",
+        "ts-node": "^8.10.1",
+        "typescript": "^3.9.3"
+    },
+    "dependencies": {
+        "axios": "^0.19.2",
+        "discord.js": "^12.2.0",
+        "dotenv": "^8.2.0",
+        "mongoose": "^5.9.15",
+        "winston": "^3.2.1"
+    }
 }
