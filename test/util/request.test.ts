@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { getSteamId, getOwnedSteamGames } from '../../src/util/request';
+
+import {
+    getOwnedSteamGames,
+    getSteamGamerTag,
+    getSteamId,
+} from '../../src/util/request';
 
 jest.mock('axios');
 
@@ -90,5 +95,55 @@ describe('request tests', () => {
         expect(axiosMock).toHaveBeenCalledTimes(1);
         expect(games.success).toBeFalsy();
         expect(games.steamAppIds).toHaveLength(0);
+    });
+
+    test('getSteamGamerTag returns result if successful', async () => {
+        const axiosMock = jest
+            .spyOn(axios, 'get')
+            .mockImplementation((url: string) => {
+                return new Promise((resolve, reject) => {
+                    resolve({
+                        status: 200,
+                        data: {
+                            response: {
+                                players: [
+                                    { steamid: '1234', personaname: 'test' },
+                                ],
+                            },
+                        },
+                    });
+                });
+            })
+            .mockClear();
+
+        const gamertag = await getSteamGamerTag('1234');
+
+        expect(axiosMock).toHaveBeenCalledTimes(1);
+        expect(gamertag.success).toBeTruthy();
+        expect(gamertag.steamGamerTag).toBe('test');
+    });
+
+    test('getSteamGamerTag returns result if unsuccessful', async () => {
+        const axiosMock = jest
+            .spyOn(axios, 'get')
+            .mockImplementation((url: string) => {
+                return new Promise((resolve, reject) => {
+                    resolve({
+                        status: 200,
+                        data: {
+                            response: {
+                                players: [],
+                            },
+                        },
+                    });
+                });
+            })
+            .mockClear();
+
+        const gamertag = await getSteamGamerTag('1234');
+
+        expect(axiosMock).toHaveBeenCalledTimes(1);
+        expect(gamertag.success).toBeFalsy();
+        expect(gamertag.steamGamerTag).toBe('');
     });
 });
