@@ -9,7 +9,8 @@
     "env": {
         "browser": true,
         "es6": true,
-        "node": true
+        "node": true,
+        "jest": true
     },
     "plugins": ["@typescript-eslint"],
     "extends": [
@@ -27,5 +28,13 @@
     "rules": {
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/interface-name-prefix": 0
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".js", ".jsx", ".ts", ".tsx"],
+                "moduleDirectory": ["node_modules", "/src"]
+            }
+        }
     }
 }

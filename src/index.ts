@@ -1,18 +1,18 @@
 import * as Discord from 'discord.js';
 import mongoose from 'mongoose';
 
-import { HelpCommand } from './commands/help';
-import { PlayCommand } from './commands/play';
 import { getGameModel } from './models/game';
-import { ICommand } from './types/ICommand';
-import { DISCORD_TOKEN, MONGO_URI } from './util/config';
+import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX } from './util/config';
 import logger from './util/logger';
+import { getCommands } from './util/commands';
+import { Message } from './util/message';
 
 mongoose
     .connect(MONGO_URI, {
         useNewUrlParser: true,
         useCreateIndex: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
     })
     .then(() => {
         /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
@@ -30,19 +30,14 @@ Game.countDocuments({}, (error, result) => {
 });
 
 const client = new Discord.Client();
-const commands = new Discord.Collection<string, ICommand>();
-const helpCommand = new HelpCommand();
-const playCommand = new PlayCommand();
-commands.set(helpCommand.name, helpCommand);
-commands.set(playCommand.name, playCommand);
-const prefix = 'wswp';
+const commands = getCommands();
 
 client.once('ready', () => {
     logger.info('Bot is ready!');
     client.user.setPresence({
         status: 'online',
         activity: {
-            name: 'Type "wswp help" for help',
+            name: `Type "${CONFIG_PREFIX} help" for help`,
             type: 'PLAYING',
         },
     });
@@ -55,11 +50,14 @@ client.on('message', async (message) => {
         return;
     }
 
-    if (!message.content.startsWith(prefix) || message.author.bot) {
+    if (!message.content.startsWith(CONFIG_PREFIX) || message.author.bot) {
         return;
     }
 
     const args = message.content.split(/ +/).slice(1);
+    if (!args.length) {
+        return;
+    }
     const commandName = args.shift().toLowerCase();
 
     if (!commands.has(commandName)) {
@@ -76,17 +74,24 @@ client.on('message', async (message) => {
             let reply = `You need to provide arguments for the ${commandName} command`;
 
             if (command.usage) {
-                reply += `\nThe proper usage would be: \`${prefix} ${commandName} ${command.usage}\``;
+                reply += `\nThe proper usage would be: \`${CONFIG_PREFIX} ${commandName} ${command.usage}\``;
             }
 
-            return message.channel.send(reply);
+            message.channel.send(reply);
+            return message.channel.stopTyping();
         }
         // eslint-disable-next-line @typescript-eslint/await-thenable
-        await command.execute(message, args);
-        message.channel.stopTyping();
+        await command.execute(new Message(message), args);
+        return message.channel.stopTyping();
     } catch (error) {
-        logger.error(error);
+        logger.error(
+            `Error with command ${commandName}`,
+            { error },
+            { message: message }
+        );
+        return message.channel.stopTyping();
     }
+    return message.channel.stopTyping();
 });
 
 client.login(DISCORD_TOKEN);

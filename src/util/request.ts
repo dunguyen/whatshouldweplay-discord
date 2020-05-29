@@ -36,12 +36,49 @@ export async function getOwnedSteamGames(
                     if (response.status === 200) {
                         resolve({
                             steamAppIds: response.data.response.games.map(
-                                (game) => parseInt(game.appid, 10)
+                                (game: {
+                                    appid: string;
+                                    playtime_forever: string;
+                                    playtime_windows_forever: string;
+                                    playtime_mac_forever: string;
+                                    playtime_linux_forever: string;
+                                }) => parseInt(game.appid, 10)
                             ),
                             success: true,
                         });
                     } else {
                         resolve({ steamAppIds: [], success: false });
+                    }
+                })
+                .catch((error) => {
+                    logger.error(error);
+                    reject(error);
+                });
+        }
+    );
+}
+
+export async function getSteamGamerTag(
+    steamid: string
+): Promise<{ steamGamerTag: string; success: boolean }> {
+    return new Promise<{ steamGamerTag: string; success: boolean }>(
+        (resolve, reject) => {
+            axios
+                .get(
+                    `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${STEAM_API_KEY}&steamids=${steamid}`
+                )
+                .then((response) => {
+                    if (
+                        response.status === 200 &&
+                        response.data.response.players.length > 0
+                    ) {
+                        resolve({
+                            steamGamerTag:
+                                response.data.response.players[0].personaname,
+                            success: true,
+                        });
+                    } else {
+                        resolve({ steamGamerTag: '', success: false });
                     }
                 })
                 .catch((error) => {
