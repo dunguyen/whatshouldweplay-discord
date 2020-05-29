@@ -38,3 +38,7 @@ export const CONFIG_SHOW_GAMES_RANDM_ORDER = process.env
     .CONFIG_SHOW_GAMES_RANDM_ORDER
     ? process.env.CONFIG_SHOW_GAMES_RANDM_ORDER
     : true;
+
+export const CONFIG_PREFIX = process.env.CONFIG_PREFIX
+    ? process.env.CONFIG_PREFIX
+    : 'wswp';

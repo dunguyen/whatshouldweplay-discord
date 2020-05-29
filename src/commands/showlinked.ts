@@ -1,17 +1,16 @@
-import * as Discord from 'discord.js';
-
 import { getDiscordUserModel } from '../models/discorduser';
 import { ICommand } from '../types/ICommand';
 import logger from '../util/logger';
+import { Message } from '../util/message';
 
 const DiscordUserModel = getDiscordUserModel();
 export class ShowLinkedCommand implements ICommand {
     name = 'showlinked';
-    description = 'Show the linked ids for the discord user';
+    description = 'Show the linked ids for your discord user';
     args = false;
     usage = '';
-    async execute(message: Discord.Message, args: string[]): Promise<void> {
-        const discordId = message.author.id;
+    async execute(message: Message, args: string[]): Promise<void> {
+        const discordId = message.discordMessage.author.id;
 
         const discordUser = await DiscordUserModel.find({
             discordUserId: discordId,
@@ -40,10 +39,6 @@ export class ShowLinkedCommand implements ICommand {
 
         let reply = `Your linked accounts:`;
         discordUser[0].games.forEach((gameEntry) => {
-            if (reply.length > 1800) {
-                message.reply(reply);
-                reply = ``;
-            }
             reply += `\n${gameEntry.platform}: ${
                 gameEntry.gamertag ? gameEntry.gamertag : gameEntry.accountId
             }`;

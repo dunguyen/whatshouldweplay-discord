@@ -1,5 +1,3 @@
-import * as Discord from 'discord.js';
-
 import { getDiscordUserModel } from '../models/discorduser';
 import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
@@ -9,15 +7,17 @@ import {
     getSteamGamerTag,
     getSteamId,
 } from '../util/request';
+import { Message } from '../util/message';
 
 const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();
 export class LinkCommand implements ICommand {
     name = 'link';
-    description = 'Link the discord user with steam id';
+    description =
+        'Links your discord user with the provided steam id or username';
     args = true;
-    usage = '<steam username/id>';
-    async execute(message: Discord.Message, args: string[]): Promise<void> {
+    usage = '[steam username/id]';
+    async execute(message: Message, args: string[]): Promise<void> {
         if (args.length !== 1) {
             message.reply('Please provide exactly one steam username or id');
             return;
@@ -43,7 +43,7 @@ export class LinkCommand implements ICommand {
         );
 
         const existingLink = await DiscordUserModel.find({
-            discordUserId: message.author.id,
+            discordUserId: message.discordMessage.author.id,
             'games.platform': 'steam',
             'games.accountId': id,
         });
@@ -54,7 +54,7 @@ export class LinkCommand implements ICommand {
             return;
         }
 
-        const filter = { discordUserId: message.author.id };
+        const filter = { discordUserId: message.discordMessage.author.id };
         const update = {
             $push: {
                 games: {

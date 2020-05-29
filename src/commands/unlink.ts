@@ -1,21 +1,20 @@
-import * as Discord from 'discord.js';
-
 import { getDiscordUserModel } from '../models/discorduser';
 import { ICommand } from '../types/ICommand';
+import { Message } from '../util/message';
 
 const DiscordUserModel = getDiscordUserModel();
 export class UnlinkCommand implements ICommand {
     name = 'unlink';
-    description = 'Unlink the discord user with steam id';
+    description = 'Unlink your discord user with steam id';
     args = true;
-    usage = '<steam gamertag/id> <steam gamertag/id>';
-    async execute(message: Discord.Message, args: string[]): Promise<void> {
+    usage = '[steam id or steam gamertag from the showlinked command]';
+    async execute(message: Message, args: string[]): Promise<void> {
         if (args.length === 0) {
             message.reply('Please provide at least one steam gamertag or id');
             return;
         }
 
-        const discordId = message.author.id;
+        const discordId = message.discordMessage.author.id;
 
         const filter = { discordUserId: discordId };
 
