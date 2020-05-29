@@ -5,6 +5,7 @@ import { getGameModel } from './models/game';
 import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX } from './util/config';
 import logger from './util/logger';
 import { getCommands } from './util/commands';
+import { Message } from './util/message';
 
 mongoose
     .connect(MONGO_URI, {
@@ -80,7 +81,7 @@ client.on('message', async (message) => {
             return message.channel.stopTyping();
         }
         // eslint-disable-next-line @typescript-eslint/await-thenable
-        await command.execute(message, args);
+        await command.execute(new Message(message), args);
         return message.channel.stopTyping();
     } catch (error) {
         logger.error(

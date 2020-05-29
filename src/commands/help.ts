@@ -1,16 +1,14 @@
-import * as Discord from 'discord.js';
-
 import { ICommand } from '../types/ICommand';
 import { getCommands } from '../util/commands';
 import { CONFIG_PREFIX } from '../util/config';
-import logger from '../util/logger';
+import { Message } from '../util/message';
 
 export class HelpCommand implements ICommand {
     name = 'help';
     description = 'Lists all commands or info about a specific command';
     args = false;
     usage = '[command name]';
-    execute(message: Discord.Message, args: string[]): Promise<void> {
+    execute(message: Message, args: string[]): Promise<void> {
         const data: string[] = [];
         const commands = getCommands();
 
@@ -30,22 +28,7 @@ export class HelpCommand implements ICommand {
                 `You can send ${CONFIG_PREFIX} help [command name] to get info on a specific command.`
             );
 
-            return message.author
-                .send(data, { split: true })
-                .then(() => {
-                    if (message.channel.type === 'dm') {
-                        return;
-                    }
-                    message.reply(`I've sent you a DM with all my commands!`);
-                })
-                .catch((error) => {
-                    logger.error(`Unable to send DM to ${message.author.tag}`, {
-                        error,
-                    });
-                    message.reply(
-                        `It looks like I can't DM you. Do you have DMs enabled?`
-                    );
-                });
+            return message.sendDM(data);
         }
 
         const name = args[0].toLowerCase();
@@ -64,7 +47,7 @@ export class HelpCommand implements ICommand {
             `How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`
         );
 
-        message.reply(data, { split: true });
+        message.reply(data);
         return;
     }
 }

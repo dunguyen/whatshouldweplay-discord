@@ -1,15 +1,14 @@
-import * as Discord from 'discord.js';
-
-import { getGameModel, GameDocument } from '../models/game';
+import { getDiscordUserModel } from '../models/discorduser';
+import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
-import logger from '../util/logger';
-import { getOwnedSteamGames, getSteamId } from '../util/request';
 import {
-    CONFIG_NUMBER_OF_GAMES_DISPLAYED,
     CONFIG_COMMON_GAMES_THRESHOLD,
+    CONFIG_NUMBER_OF_GAMES_DISPLAYED,
     CONFIG_SHOW_GAMES_RANDM_ORDER,
 } from '../util/config';
-import { getDiscordUserModel } from '../models/discorduser';
+import logger from '../util/logger';
+import { Message } from '../util/message';
+import { getOwnedSteamGames, getSteamId } from '../util/request';
 
 const DiscordUserModel = getDiscordUserModel();
 const Game = getGameModel();
@@ -18,10 +17,12 @@ export class PlayCommand implements ICommand {
     description = 'Finds multi-player games that you have in common';
     args = true;
     usage = '[@mention, steam username, steam id separated by a space]';
-    async execute(message: Discord.Message, args: string[]): Promise<void> {
-        const discordIds = message.mentions.users.map((discordUser) => {
-            return discordUser.id;
-        });
+    async execute(message: Message, args: string[]): Promise<void> {
+        const discordIds = message.discordMessage.mentions.users.map(
+            (discordUser) => {
+                return discordUser.id;
+            }
+        );
 
         const sanitizedArgs = args.filter((arg) => {
             return !arg.startsWith('<@!') && !arg.endsWith('>');
@@ -117,6 +118,6 @@ export class PlayCommand implements ICommand {
             msg += `\n ${gameListEntry.occurrences}\t${gameListEntry.name}`;
         });
 
-        message.channel.send(msg, { split: true });
+        message.sendToChannel(msg);
     }
 }
