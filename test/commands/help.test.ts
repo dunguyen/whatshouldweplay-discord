@@ -20,6 +20,6 @@ describe('help command tests', () => {
         const args: string[] = ['help'];
 
         await helpCommand.execute(message, args);
-        expect(message.sendDM).toHaveBeenCalledTimes(1);
+        expect(message.reply).toHaveBeenCalledTimes(1);
     });
 });
