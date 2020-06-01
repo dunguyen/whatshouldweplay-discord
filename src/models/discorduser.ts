@@ -31,15 +31,9 @@ const DiscordUserSchema = new mongoose.Schema(
 
 let DiscordUser: Model<DiscordUserDocument>;
 
-export const getDiscordUserModel = (): mongoose.Model<
-    DiscordUserDocument,
-    {}
-> => {
+export const getDiscordUserModel = (): mongoose.Model<DiscordUserDocument, {}> => {
     try {
-        DiscordUser = mongoose.model<DiscordUserDocument>(
-            'DiscordUser',
-            DiscordUserSchema
-        );
+        DiscordUser = mongoose.model<DiscordUserDocument>('DiscordUser', DiscordUserSchema);
     } catch (e) {
         logger.debug(e);
     }

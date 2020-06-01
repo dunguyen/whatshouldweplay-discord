@@ -21,9 +21,7 @@ export class UnlinkCommand implements ICommand {
         const discordUser = await DiscordUserModel.findOne(filter);
 
         discordUser.games = discordUser.games.filter((game) => {
-            return (
-                !args.includes(game.gamertag) && !args.includes(game.accountId)
-            );
+            return !args.includes(game.gamertag) && !args.includes(game.accountId);
         });
 
         if (discordUser.games.length === 0) {

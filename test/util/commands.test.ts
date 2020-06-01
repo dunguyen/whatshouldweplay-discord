@@ -14,8 +14,6 @@ describe('commands tests', () => {
         expect(commands.get('play') instanceof PlayCommand).toBeTruthy();
         expect(commands.get('link') instanceof LinkCommand).toBeTruthy();
         expect(commands.get('unlink') instanceof UnlinkCommand).toBeTruthy();
-        expect(
-            commands.get('showlinked') instanceof ShowLinkedCommand
-        ).toBeTruthy();
+        expect(commands.get('showlinked') instanceof ShowLinkedCommand).toBeTruthy();
     });
 });

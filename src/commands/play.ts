@@ -18,11 +18,9 @@ export class PlayCommand implements ICommand {
     args = true;
     usage = '[@mention, steam username, steam id separated by a space]';
     async execute(message: Message, args: string[]): Promise<void> {
-        const discordIds = message.discordMessage.mentions.users.map(
-            (discordUser) => {
-                return discordUser.id;
-            }
-        );
+        const discordIds = message.discordMessage.mentions.users.map((discordUser) => {
+            return discordUser.id;
+        });
 
         const sanitizedArgs = args.filter((arg) => {
             return !arg.startsWith('<@!') && !arg.endsWith('>');
@@ -71,8 +69,7 @@ export class PlayCommand implements ICommand {
                 .filter((item, index) => mergedGames.indexOf(item) === index)
                 .forEach((game) => {
                     if (commonGames[game.steamAppId]) {
-                        commonGames[game.steamAppId] =
-                            commonGames[game.steamAppId] + 1;
+                        commonGames[game.steamAppId] = commonGames[game.steamAppId] + 1;
                     } else {
                         commonGames[game.steamAppId] = 1;
                     }
@@ -87,10 +84,7 @@ export class PlayCommand implements ICommand {
 
         const gameList = games
             .filter((game) => {
-                if (
-                    commonGames[game.steamAppId] / args.length >
-                    CONFIG_COMMON_GAMES_THRESHOLD
-                ) {
+                if (commonGames[game.steamAppId] / args.length > CONFIG_COMMON_GAMES_THRESHOLD) {
                     return true;
                 } else {
                     return false;
@@ -108,11 +102,7 @@ export class PlayCommand implements ICommand {
         logger.info(`Number of games above threshold: ${gameList.length}`);
 
         gameList
-            .sort((a, b) =>
-                CONFIG_SHOW_GAMES_RANDM_ORDER
-                    ? 0.5 - Math.random()
-                    : b.occurrences - a.occurrences
-            )
+            .sort((a, b) => (CONFIG_SHOW_GAMES_RANDM_ORDER ? 0.5 - Math.random() : b.occurrences - a.occurrences))
             .splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
         gameList.forEach((gameListEntry) => {
             msg += `\n ${gameListEntry.occurrences}\t${gameListEntry.name}`;

@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-import {
-    getOwnedSteamGames,
-    getSteamGamerTag,
-    getSteamId,
-} from '../../src/util/request';
+import { getOwnedSteamGames, getSteamGamerTag, getSteamId } from '../../src/util/request';
 
 jest.mock('axios');
 
@@ -106,9 +102,7 @@ describe('request tests', () => {
                         status: 200,
                         data: {
                             response: {
-                                players: [
-                                    { steamid: '1234', personaname: 'test' },
-                                ],
+                                players: [{ steamid: '1234', personaname: 'test' }],
                             },
                         },
                     });

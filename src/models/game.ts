@@ -117,9 +117,7 @@ export const getGameModel = (): mongoose.Model<GameDocument, {}> => {
     return Game;
 };
 
-export async function getGameObjectIdsFromSteamAppIds(
-    steamAppIds: number[]
-): Promise<string[]> {
+export async function getGameObjectIdsFromSteamAppIds(steamAppIds: number[]): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) =>
         Game.find({ steamAppId: { $in: steamAppIds } })
             .then((games) => {
