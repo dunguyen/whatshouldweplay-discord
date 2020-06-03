@@ -31,4 +31,8 @@ export class Message {
     sendToChannel(message: string | string[]): Promise<Discord.Message> {
         return this.discordMessage.channel.send(message, { split: true });
     }
+
+    getAuthorId(): string {
+        return this.discordMessage.author.id;
+    }
 }

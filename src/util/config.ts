@@ -37,3 +37,7 @@ export const CONFIG_SHOW_GAMES_RANDM_ORDER = process.env.CONFIG_SHOW_GAMES_RANDM
     : true;
 
 export const CONFIG_PREFIX = process.env.CONFIG_PREFIX ? process.env.CONFIG_PREFIX : 'wswp';
+
+export const CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS = process.env.CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS
+    ? parseInt(process.env.CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS, 10)
+    : 7;

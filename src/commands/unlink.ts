@@ -1,6 +1,7 @@
 import { getDiscordUserModel } from '../models/discorduser';
 import { ICommand } from '../types/ICommand';
 import { Message } from '../util/message';
+import { unLinkSteamGames } from '../models/userlibrary';
 
 const DiscordUserModel = getDiscordUserModel();
 export class UnlinkCommand implements ICommand {
@@ -14,26 +15,8 @@ export class UnlinkCommand implements ICommand {
             return;
         }
 
-        const discordId = message.discordMessage.author.id;
-
-        const filter = { discordUserId: discordId };
-
-        const discordUser = await DiscordUserModel.findOne(filter);
-
-        discordUser.games = discordUser.games.filter((game) => {
-            return !args.includes(game.gamertag) && !args.includes(game.accountId);
-        });
-
-        if (discordUser.games.length === 0) {
-            await discordUser.remove();
-            message.reply(
-                `Successfully unlinked the account and deleted user as there were no more linked accounts left. You can use link to create a new user.`
-            );
-            return;
-        }
-        await discordUser.save();
-
-        message.reply(`Successfully unlinked accounts`);
+        const result = await unLinkSteamGames(message.discordMessage.author.id, args);
+        message.reply(result.message);
         return;
     }
 }

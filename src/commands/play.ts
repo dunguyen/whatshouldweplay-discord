@@ -9,6 +9,7 @@ import {
 import logger from '../util/logger';
 import { Message } from '../util/message';
 import { getOwnedSteamGames, getSteamId } from '../util/request';
+import { updateUserGames } from '../models/userlibrary';
 
 const DiscordUserModel = getDiscordUserModel();
 const Game = getGameModel();
@@ -19,6 +20,7 @@ export class PlayCommand implements ICommand {
     usage = '[@mention, steam username, steam id separated by a space]';
     async execute(message: Message, args: string[]): Promise<void> {
         const discordIds = message.discordMessage.mentions.users.map((discordUser) => {
+            updateUserGames(discordUser.id);
             return discordUser.id;
         });
 

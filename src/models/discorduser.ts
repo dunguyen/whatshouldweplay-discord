@@ -11,6 +11,7 @@ export type DiscordUserDocument = mongoose.Document & {
         lastUpdated?: Date;
         games: string[] | GameDocument[];
     }[];
+    updatedAt: Date;
 };
 
 const DiscordUserSchema = new mongoose.Schema(
