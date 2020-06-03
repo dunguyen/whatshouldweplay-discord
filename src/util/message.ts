@@ -18,24 +18,21 @@ export class Message {
                 if (this.discordMessage.channel.type === 'dm') {
                     return;
                 }
-                this.discordMessage.reply(
-                    `I've sent you a DM with all my commands!`
-                );
+                this.discordMessage.reply(`I've sent you a DM with all my commands!`);
             })
             .catch((error) => {
-                logger.error(
-                    `Unable to send DM to ${this.discordMessage.author.tag}`,
-                    {
-                        error,
-                    }
-                );
-                this.discordMessage.reply(
-                    `It looks like I can't DM you. Do you have DMs enabled?`
-                );
+                logger.error(`Unable to send DM to ${this.discordMessage.author.tag}`, {
+                    error,
+                });
+                this.discordMessage.reply(`It looks like I can't DM you. Do you have DMs enabled?`);
             });
     }
 
     sendToChannel(message: string | string[]): Promise<Discord.Message> {
         return this.discordMessage.channel.send(message, { split: true });
+    }
+
+    getAuthorId(): string {
+        return this.discordMessage.author.id;
     }
 }

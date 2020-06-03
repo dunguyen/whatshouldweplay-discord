@@ -24,9 +24,7 @@ export class HelpCommand implements ICommand {
                     })
                     .join(', ')
             );
-            data.push(
-                `You can send ${CONFIG_PREFIX} help [command name] to get info on a specific command.`
-            );
+            data.push(`You can send ${CONFIG_PREFIX} help [command name] to get info on a specific command.`);
 
             return message.sendDM(data);
         }
@@ -43,9 +41,7 @@ export class HelpCommand implements ICommand {
         if (command.description) {
             data.push(`Description: ${command.description}`);
         }
-        data.push(
-            `How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`
-        );
+        data.push(`How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`);
 
         message.reply(data);
         return;

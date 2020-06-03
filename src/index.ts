@@ -18,10 +18,7 @@ mongoose
         /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
     })
     .catch((err) => {
-        logger.error(
-            'MongoDB connection error. Please make sure MongoDB is running. ' +
-                err
-        );
+        logger.error('MongoDB connection error. Please make sure MongoDB is running. ' + err);
     });
 
 const Game = getGameModel();
@@ -84,11 +81,7 @@ client.on('message', async (message) => {
         await command.execute(new Message(message), args);
         return message.channel.stopTyping();
     } catch (error) {
-        logger.error(
-            `Error with command ${commandName}`,
-            { error },
-            { message: message }
-        );
+        logger.error(`Error with command ${commandName}`, { error }, { message: message });
         return message.channel.stopTyping();
     }
     return message.channel.stopTyping();
