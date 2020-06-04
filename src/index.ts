@@ -6,6 +6,7 @@ import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX } from './util/config';
 import logger from './util/logger';
 import { getCommands } from './util/commands';
 import { Message } from './util/message';
+import { logEvent } from './util/analytics';
 
 mongoose
     .connect(MONGO_URI, {
@@ -59,6 +60,14 @@ client.on('message', async (message) => {
 
     if (!commands.has(commandName)) {
         logger.info(`Command: ${commandName} not found`);
+        logEvent({
+            event: 'Unknown command',
+            commandName: commandName,
+            channelId: message.channel.id,
+            channelType: message.channel.type,
+            commandArgs: args,
+            discordUserId: message.author.id,
+        });
         return;
     }
 
@@ -79,10 +88,27 @@ client.on('message', async (message) => {
         }
         // eslint-disable-next-line @typescript-eslint/await-thenable
         await command.execute(new Message(message), args);
-        return message.channel.stopTyping();
+        logEvent({
+            event: 'Command successfully executed',
+            commandName: commandName,
+            channelId: message.channel.id,
+            channelType: message.channel.type,
+            commandArgs: args,
+            discordUserId: message.author.id,
+            result: true,
+        });
     } catch (error) {
         logger.error(`Error with command ${commandName}`, { error }, { message: message });
-        return message.channel.stopTyping();
+        logEvent({
+            event: 'Command failed',
+            commandName: commandName,
+            channelId: message.channel.id,
+            channelType: message.channel.type,
+            commandArgs: args,
+            discordUserId: message.author.id,
+            result: true,
+            eventDetails: { error },
+        });
     }
     return message.channel.stopTyping();
 });
