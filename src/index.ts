@@ -79,10 +79,8 @@ client.on('message', async (message) => {
         }
         // eslint-disable-next-line @typescript-eslint/await-thenable
         await command.execute(new Message(message), args);
-        return message.channel.stopTyping();
     } catch (error) {
         logger.error(`Error with command ${commandName}`, { error }, { message: message });
-        return message.channel.stopTyping();
     }
     return message.channel.stopTyping();
 });
