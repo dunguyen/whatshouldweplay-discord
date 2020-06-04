@@ -48,6 +48,9 @@ export async function getOwnedSteamGames(steamid: string): Promise<{ steamAppIds
                 }
             })
             .catch((error) => {
+                if (error.response.status === 500) {
+                    resolve({ steamAppIds: [], success: false });
+                }
                 logger.error(error);
                 reject(error);
             });

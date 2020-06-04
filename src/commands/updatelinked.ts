@@ -1,6 +1,6 @@
+import { updateUserGames } from '../models/userlibrary';
 import { ICommand } from '../types/ICommand';
 import { Message } from '../util/message';
-import { updateUserGames } from '../models/userlibrary';
 
 export class UpdateLinkedCommand implements ICommand {
     name = 'updatelinked';
