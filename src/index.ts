@@ -42,12 +42,6 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-    // If not in a server, return
-    if (!message.guild) {
-        logger.debug(`Message sent outside guild`);
-        return;
-    }
-
     if (!message.content.startsWith(CONFIG_PREFIX) || message.author.bot) {
         return;
     }
@@ -75,6 +69,11 @@ client.on('message', async (message) => {
 
     try {
         message.channel.startTyping();
+
+        if (command.dmOnly && message.channel.type != 'dm') {
+            message.reply(`This command only works when you DM me. Please send the command again in a DM to me.`);
+            return message.channel.stopTyping();
+        }
 
         if (command.args && !args.length) {
             let reply = `You need to provide arguments for the ${commandName} command`;

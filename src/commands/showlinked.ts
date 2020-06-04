@@ -9,6 +9,7 @@ export class ShowLinkedCommand implements ICommand {
     description = 'Show the linked ids for your discord user';
     args = false;
     usage = '';
+    dmOnly = true;
     async execute(message: Message, args: string[]): Promise<void> {
         const discordId = message.discordMessage.author.id;
 

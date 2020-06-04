@@ -18,6 +18,7 @@ export class PlayCommand implements ICommand {
     description = 'Finds multi-player games that you have in common';
     args = true;
     usage = '[@mention, steam username, steam id separated by a space]';
+    dmOnly = false;
     async execute(message: Message, args: string[]): Promise<void> {
         const discordIds = message.discordMessage.mentions.users.map((discordUser) => {
             updateUserGames(discordUser.id);
