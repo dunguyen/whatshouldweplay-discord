@@ -1,16 +1,18 @@
 import mongoose, { Model, Schema } from 'mongoose';
 import logger from '../util/logger';
 
-export type EventDocument = mongoose.Document & {
+export type AnalyticsEvent = {
     channelId: string;
     channelType: string;
     discordUserId: string;
     commandName: string;
     commandArgs: string[];
-    result: boolean;
+    result?: boolean;
     event: string;
-    eventDetails: any;
+    eventDetails?: unknown;
 };
+
+export type EventDocument = mongoose.Document & AnalyticsEvent;
 
 const EventSchema = new mongoose.Schema(
     {
@@ -19,7 +21,7 @@ const EventSchema = new mongoose.Schema(
         discordUserId: String,
         commandName: String,
         commandArgs: [String],
-        result: Boolean,
+        result: { type: Boolean, default: 'false' },
         event: String,
         eventDetails: Schema.Types.Mixed,
     },
