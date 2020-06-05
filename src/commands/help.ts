@@ -8,6 +8,7 @@ export class HelpCommand implements ICommand {
     description = 'Lists all commands or info about a specific command';
     args = false;
     usage = '[command name]';
+    dmOnly = false;
     execute(message: Message, args: string[]): Promise<void> {
         const data: string[] = [];
         const commands = getCommands();
@@ -42,6 +43,9 @@ export class HelpCommand implements ICommand {
             data.push(`Description: ${command.description}`);
         }
         data.push(`How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`);
+        if (command.dmOnly) {
+            data.push(`This command will only work if you DM me to avoid spamming the channel`);
+        }
 
         message.reply(data);
         return;

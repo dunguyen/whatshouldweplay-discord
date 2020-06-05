@@ -8,6 +8,7 @@ export class LinkCommand implements ICommand {
     description = 'Links your discord user with the provided steam id or username';
     args = true;
     usage = '[steam username/id]';
+    dmOnly = true;
     async execute(message: Message, args: string[]): Promise<void> {
         if (args.length !== 1) {
             message.reply('Please provide exactly one steam username or id');

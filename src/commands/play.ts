@@ -17,6 +17,7 @@ export class PlayCommand implements ICommand {
     name = 'play';
     description = 'Finds multi-player games that you have in common';
     args = true;
+    dmOnly = false;
     usage =
         '[any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
     async execute(message: Message, args: string[]): Promise<void> {

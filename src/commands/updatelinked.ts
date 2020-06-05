@@ -7,6 +7,7 @@ export class UpdateLinkedCommand implements ICommand {
     description = 'Update all linked accounts';
     args = false;
     usage = '';
+    dmOnly = true;
     async execute(message: Message, args: string[]): Promise<void> {
         await updateUserGames(message.getAuthorId(), true);
         message.reply(`All of your linked profiles have been updated`);
