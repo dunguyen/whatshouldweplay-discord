@@ -2,10 +2,11 @@ import * as Discord from 'discord.js';
 import mongoose from 'mongoose';
 
 import { getGameModel } from './models/game';
-import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX } from './util/config';
+import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX, setBotId } from './util/config';
 import logger from './util/logger';
 import { getCommands } from './util/commands';
 import { Message } from './util/message';
+import { logEvent } from './util/analytics';
 
 mongoose
     .connect(MONGO_URI, {
@@ -18,10 +19,7 @@ mongoose
         /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
     })
     .catch((err) => {
-        logger.error(
-            'MongoDB connection error. Please make sure MongoDB is running. ' +
-                err
-        );
+        logger.error('MongoDB connection error. Please make sure MongoDB is running. ' + err);
     });
 
 const Game = getGameModel();
@@ -41,15 +39,11 @@ client.once('ready', () => {
             type: 'PLAYING',
         },
     });
+
+    setBotId(client.user.id);
 });
 
 client.on('message', async (message) => {
-    // If not in a server, return
-    if (!message.guild) {
-        logger.debug(`Message sent outside guild`);
-        return;
-    }
-
     if (!message.content.startsWith(CONFIG_PREFIX) || message.author.bot) {
         return;
     }
@@ -62,6 +56,14 @@ client.on('message', async (message) => {
 
     if (!commands.has(commandName)) {
         logger.info(`Command: ${commandName} not found`);
+        logEvent({
+            event: 'Unknown command',
+            commandName: commandName,
+            channelId: message.channel.id,
+            channelType: message.channel.type,
+            commandArgs: args,
+            discordUserId: message.author.id,
+        });
         return;
     }
 
@@ -69,6 +71,18 @@ client.on('message', async (message) => {
 
     try {
         message.channel.startTyping();
+
+        if (command.dmOnly && message.channel.type != 'dm') {
+            message.reply(`This command only works when you DM me. Please send the command again in a DM to me.`);
+            return message.channel.stopTyping();
+        }
+
+        if (message.guild && command.admin && !message.member.hasPermission('ADMINISTRATOR')) {
+            message.reply(
+                `You don't have the permission to run this command. Try contacting the channel administrator`
+            );
+            return message.channel.stopTyping();
+        }
 
         if (command.args && !args.length) {
             let reply = `You need to provide arguments for the ${commandName} command`;
@@ -80,16 +94,29 @@ client.on('message', async (message) => {
             message.channel.send(reply);
             return message.channel.stopTyping();
         }
+
         // eslint-disable-next-line @typescript-eslint/await-thenable
         await command.execute(new Message(message), args);
-        return message.channel.stopTyping();
+        logEvent({
+            event: 'Command successfully executed',
+            commandName: commandName,
+            channelId: message.channel.id,
+            channelType: message.channel.type,
+            commandArgs: args,
+            discordUserId: message.author.id,
+            result: true,
+        });
     } catch (error) {
-        logger.error(
-            `Error with command ${commandName}`,
-            { error },
-            { message: message }
-        );
-        return message.channel.stopTyping();
+        logger.error(`Error with command ${commandName}`, { error }, { message: message });
+        logEvent({
+            event: 'Command failed',
+            commandName: commandName,
+            channelId: message.channel.id,
+            channelType: message.channel.type,
+            commandArgs: args,
+            discordUserId: message.author.id,
+            result: true,
+        });
     }
     return message.channel.stopTyping();
 });

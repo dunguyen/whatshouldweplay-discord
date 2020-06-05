@@ -5,5 +5,7 @@ export interface ICommand {
     description: string;
     args: boolean;
     usage?: string;
+    dmOnly: boolean;
+    admin: boolean;
     execute(message: Message, args: string[]): void;
 }

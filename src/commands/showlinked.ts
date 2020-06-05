@@ -9,6 +9,8 @@ export class ShowLinkedCommand implements ICommand {
     description = 'Show the linked ids for your discord user';
     args = false;
     usage = '';
+    dmOnly = true;
+    admin = false;
     async execute(message: Message, args: string[]): Promise<void> {
         const discordId = message.discordMessage.author.id;
 
@@ -27,23 +29,16 @@ export class ShowLinkedCommand implements ICommand {
             return;
         }
 
-        if (
-            discordUser.length === 0 ||
-            !discordUser[0] ||
-            !discordUser[0].games ||
-            discordUser[0].games.length === 0
-        ) {
+        if (discordUser.length === 0 || !discordUser[0] || !discordUser[0].games || discordUser[0].games.length === 0) {
             message.reply(`I could not find any information on you.`);
             return;
         }
 
         let reply = `Your linked accounts:`;
         discordUser[0].games.forEach((gameEntry) => {
-            reply += `\n${gameEntry.platform}: ${
-                gameEntry.gamertag ? gameEntry.gamertag : gameEntry.accountId
-            }`;
+            reply += `\n${gameEntry.platform}: ${gameEntry.gamertag ? gameEntry.gamertag : gameEntry.accountId}`;
         });
-        reply += `\nTo unlink an account, please use the unlink command.`;
+        reply += `\nTo unlink an account, please use the unlink command together with the gamertag or accountid shown here.`;
 
         message.reply(reply);
         return;

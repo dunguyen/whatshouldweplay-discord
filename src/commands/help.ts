@@ -8,6 +8,8 @@ export class HelpCommand implements ICommand {
     description = 'Lists all commands or info about a specific command';
     args = false;
     usage = '[command name]';
+    dmOnly = false;
+    admin = false;
     execute(message: Message, args: string[]): Promise<void> {
         const data: string[] = [];
         const commands = getCommands();
@@ -24,9 +26,7 @@ export class HelpCommand implements ICommand {
                     })
                     .join(', ')
             );
-            data.push(
-                `You can send ${CONFIG_PREFIX} help [command name] to get info on a specific command.`
-            );
+            data.push(`You can send ${CONFIG_PREFIX} help [command name] to get info on a specific command.`);
 
             return message.sendDM(data);
         }
@@ -43,9 +43,13 @@ export class HelpCommand implements ICommand {
         if (command.description) {
             data.push(`Description: ${command.description}`);
         }
-        data.push(
-            `How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`
-        );
+        data.push(`How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`);
+        if (command.dmOnly) {
+            data.push(`This command will only work if you DM me to avoid spamming the channel`);
+        }
+        if (command.admin) {
+            data.push(`This command can only be run by a channel admin`);
+        }
 
         message.reply(data);
         return;
