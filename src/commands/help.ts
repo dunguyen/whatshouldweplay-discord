@@ -9,6 +9,7 @@ export class HelpCommand implements ICommand {
     args = false;
     usage = '[command name]';
     dmOnly = false;
+    admin = false;
     execute(message: Message, args: string[]): Promise<void> {
         const data: string[] = [];
         const commands = getCommands();
@@ -45,6 +46,9 @@ export class HelpCommand implements ICommand {
         data.push(`How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`);
         if (command.dmOnly) {
             data.push(`This command will only work if you DM me to avoid spamming the channel`);
+        }
+        if (command.admin) {
+            data.push(`This command can only be run by a channel admin`);
         }
 
         message.reply(data);

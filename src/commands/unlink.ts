@@ -8,6 +8,7 @@ export class UnlinkCommand implements ICommand {
     args = true;
     usage = '[steam id or steam gamertag from the showlinked command]';
     dmOnly = true;
+    admin = false;
     async execute(message: Message, args: string[]): Promise<void> {
         if (args.length === 0) {
             message.reply('Please provide at least one steam gamertag or id');
