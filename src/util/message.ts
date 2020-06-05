@@ -11,7 +11,7 @@ export class Message {
         return this.discordMessage.reply(message, { split: true });
     }
 
-    sendDM(message: string | string[], notifyInChannel = true): Promise<void> {
+    sendDM(message: string | string[]): Promise<void> {
         return this.discordMessage.author
             .send(message, { split: true })
             .then(() => {
