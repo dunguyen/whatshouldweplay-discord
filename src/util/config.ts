@@ -41,3 +41,9 @@ export const CONFIG_PREFIX = process.env.CONFIG_PREFIX ? process.env.CONFIG_PREF
 export const CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS = process.env.CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS
     ? parseInt(process.env.CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS, 10)
     : 7;
+
+export let BOT_ID = '';
+
+export const setBotId = function (botId: string): void {
+    BOT_ID = botId;
+};

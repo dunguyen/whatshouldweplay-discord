@@ -10,6 +10,7 @@ export class ShowLinkedCommand implements ICommand {
     args = false;
     usage = '';
     dmOnly = true;
+    admin = false;
     async execute(message: Message, args: string[]): Promise<void> {
         const discordId = message.discordMessage.author.id;
 

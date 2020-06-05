@@ -9,6 +9,7 @@ export class LinkCommand implements ICommand {
     args = true;
     usage = '[steam username/id]';
     dmOnly = true;
+    admin = false;
     async execute(message: Message, args: string[]): Promise<void> {
         if (args.length !== 1) {
             message.reply('Please provide exactly one steam username or id');

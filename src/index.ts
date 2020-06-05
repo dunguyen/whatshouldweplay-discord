@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import mongoose from 'mongoose';
 
 import { getGameModel } from './models/game';
-import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX } from './util/config';
+import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX, setBotId } from './util/config';
 import logger from './util/logger';
 import { getCommands } from './util/commands';
 import { Message } from './util/message';
@@ -39,6 +39,8 @@ client.once('ready', () => {
             type: 'PLAYING',
         },
     });
+
+    setBotId(client.user.id);
 });
 
 client.on('message', async (message) => {
@@ -75,6 +77,12 @@ client.on('message', async (message) => {
             return message.channel.stopTyping();
         }
 
+        if (!(message.guild && command.admin && message.member.hasPermission('ADMINISTRATOR'))) {
+            message.reply(
+                `You don't have the permission to run this command. Try contacting the channel administrator`
+            );
+            return message.channel.stopTyping();
+        }
         if (command.args && !args.length) {
             let reply = `You need to provide arguments for the ${commandName} command`;
 
@@ -85,6 +93,7 @@ client.on('message', async (message) => {
             message.channel.send(reply);
             return message.channel.stopTyping();
         }
+
         // eslint-disable-next-line @typescript-eslint/await-thenable
         await command.execute(new Message(message), args);
         logEvent({
