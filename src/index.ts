@@ -77,12 +77,13 @@ client.on('message', async (message) => {
             return message.channel.stopTyping();
         }
 
-        if (!(message.guild && command.admin && message.member.hasPermission('ADMINISTRATOR'))) {
+        if (message.guild && command.admin && !message.member.hasPermission('ADMINISTRATOR')) {
             message.reply(
                 `You don't have the permission to run this command. Try contacting the channel administrator`
             );
             return message.channel.stopTyping();
         }
+
         if (command.args && !args.length) {
             let reply = `You need to provide arguments for the ${commandName} command`;
 

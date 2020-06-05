@@ -26,7 +26,7 @@ logger.debug(`Node Env is: ${process.env.NODE_ENV}`);
 
 export const CONFIG_NUMBER_OF_GAMES_DISPLAYED = process.env.CONFIG_NUMBER_OF_GAMES_DISPLAYED
     ? parseInt(process.env.CONFIG_NUMBER_OF_GAMES_DISPLAYED, 10)
-    : 5;
+    : 10;
 
 export const CONFIG_COMMON_GAMES_THRESHOLD = process.env.CONFIG_COMMON_GAMES_THRESHOLD
     ? parseInt(process.env.CONFIG_COMMON_GAMES_THRESHOLD, 10)
