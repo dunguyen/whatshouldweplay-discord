@@ -36,7 +36,7 @@ export class ShowLinkedCommand implements ICommand {
         discordUser[0].games.forEach((gameEntry) => {
             reply += `\n${gameEntry.platform}: ${gameEntry.gamertag ? gameEntry.gamertag : gameEntry.accountId}`;
         });
-        reply += `\nTo unlink an account, please use the unlink command.`;
+        reply += `\nTo unlink an account, please use the unlink command together with the gamertag or accountid shown here.`;
 
         message.reply(reply);
         return;
