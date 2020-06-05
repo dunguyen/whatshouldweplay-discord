@@ -23,8 +23,10 @@ export async function getSteamId(username: string): Promise<string> {
     });
 }
 
-export async function getOwnedSteamGames(steamid: string): Promise<{ steamAppIds: number[]; success: boolean }> {
-    return new Promise<{ steamAppIds: number[]; success: boolean }>((resolve, reject) => {
+export async function getOwnedSteamGames(
+    steamid: string
+): Promise<{ steamAppIds: number[]; success: boolean; id: string }> {
+    return new Promise<{ steamAppIds: number[]; success: boolean; id: string }>((resolve, reject) => {
         axios
             .get(
                 `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${steamid}&format=json`
@@ -42,12 +44,16 @@ export async function getOwnedSteamGames(steamid: string): Promise<{ steamAppIds
                             }) => parseInt(game.appid, 10)
                         ),
                         success: true,
+                        id: steamid,
                     });
                 } else {
-                    resolve({ steamAppIds: [], success: false });
+                    resolve({ steamAppIds: [], success: false, id: steamid });
                 }
             })
             .catch((error) => {
+                if (error.response.status === 500) {
+                    resolve({ steamAppIds: [], success: false, id: steamid });
+                }
                 logger.error(error);
                 reject(error);
             });

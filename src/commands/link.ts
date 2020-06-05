@@ -22,7 +22,9 @@ export class LinkCommand implements ICommand {
         const [gameList, steamGamerTag] = await Promise.all([getOwnedSteamGames(id), getSteamGamerTag(id)]);
 
         if (!gameList.success) {
-            message.reply(`No steam games found for ${username}`);
+            message.reply(
+                `No steam games found for ${username}. Are you sure you have the right steam username or id? Log into https://steamcommunity.com/ and when on your profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>`
+            );
             return;
         }
 

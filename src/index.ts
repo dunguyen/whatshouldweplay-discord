@@ -106,7 +106,6 @@ client.on('message', async (message) => {
             commandArgs: args,
             discordUserId: message.author.id,
             result: true,
-            eventDetails: { error },
         });
     }
     return message.channel.stopTyping();

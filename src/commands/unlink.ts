@@ -1,9 +1,7 @@
-import { getDiscordUserModel } from '../models/discorduser';
+import { unLinkSteamGames } from '../models/userlibrary';
 import { ICommand } from '../types/ICommand';
 import { Message } from '../util/message';
-import { unLinkSteamGames } from '../models/userlibrary';
 
-const DiscordUserModel = getDiscordUserModel();
 export class UnlinkCommand implements ICommand {
     name = 'unlink';
     description = 'Unlink your discord user with steam id';

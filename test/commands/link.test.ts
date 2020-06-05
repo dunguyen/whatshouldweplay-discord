@@ -37,7 +37,7 @@ describe('link command tests', () => {
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
                 return new Promise((resolve, reject) => {
-                    resolve({ success: true, steamAppIds: [1, 2, 3, 4] });
+                    resolve({ success: true, steamAppIds: [1, 2, 3, 4], id: id });
                 });
             })
             .mockClear();
@@ -91,7 +91,7 @@ describe('link command tests', () => {
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
                 return new Promise((resolve, reject) => {
-                    resolve({ success: true, steamAppIds: [1, 2, 3, 4] });
+                    resolve({ success: true, steamAppIds: [1, 2, 3, 4], id: id });
                 });
             })
             .mockClear();
@@ -146,7 +146,7 @@ describe('link command tests', () => {
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
                 return new Promise((resolve, reject) => {
-                    resolve({ success: false, steamAppIds: [] });
+                    resolve({ success: false, steamAppIds: [], id: id });
                 });
             })
             .mockClear();

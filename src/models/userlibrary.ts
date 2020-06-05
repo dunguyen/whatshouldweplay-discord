@@ -87,6 +87,10 @@ export const unLinkSteamGames = async function (
 export const updateUserGames = async function (discordUserId: string, force = false): Promise<void> {
     const user = await DiscordUserModel.findOne({ discordUserId: discordUserId });
 
+    if (!user) {
+        return;
+    }
+
     if (
         Math.floor(((Date.now() - user.updatedAt.getTime()) / 1000) * 60 * 60 * 24) >
             CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS ||
