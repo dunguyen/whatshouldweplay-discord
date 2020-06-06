@@ -32,7 +32,7 @@ export async function getOwnedSteamGames(
                 `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${STEAM_API_KEY}&steamid=${steamid}&format=json`
             )
             .then((response) => {
-                if (response.status === 200) {
+                if (response.status === 200 && response.data.response.games) {
                     resolve({
                         steamAppIds: response.data.response.games.map(
                             (game: {
