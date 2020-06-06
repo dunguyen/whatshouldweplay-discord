@@ -149,6 +149,7 @@ export class PlayCommand implements ICommand {
         msg.push(`${CONFIG_NUMBER_OF_GAMES_DISPLAYED} Multi-player games you have in common:`);
         logger.info(`Number of games above threshold: ${gameList.length}`);
 
+        msg.push(`Number of players owned, Game name`);
         gameList
             .sort((a, b) => (CONFIG_SHOW_GAMES_RANDM_ORDER ? 0.5 - Math.random() : b.occurrences - a.occurrences))
             .splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
