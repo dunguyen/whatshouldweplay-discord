@@ -49,26 +49,19 @@ client.on('message', async (message) => {
     }
 
     const args = message.content.split(/ +/).slice(1);
+
     if (!args.length) {
-        return;
+        args.splice(0, 0, 'play');
     }
-    const commandName = args.shift().toLowerCase();
+    let commandName = args[0].toLowerCase();
 
     if (!commands.has(commandName)) {
-        logger.info(`Command: ${commandName} not found`);
-        logEvent({
-            event: 'Unknown command',
-            commandName: commandName,
-            channelId: message.channel.id,
-            channelType: message.channel.type,
-            commandArgs: args,
-            discordUserId: message.author.id,
-        });
-        return;
+        commandName = 'play';
+    } else {
+        args.shift();
     }
 
     const command = commands.get(commandName);
-
     try {
         message.channel.startTyping();
 
