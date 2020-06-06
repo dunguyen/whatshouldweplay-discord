@@ -20,9 +20,14 @@ export class PlayCommand implements ICommand {
     dmOnly = false;
     admin = false;
     usage =
-        '[any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
+        '[optional: action|strategy|rpg|sports|simulation|casual|racing] [any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
     async execute(message: Message, args: string[]): Promise<void> {
         const msg = [];
+        let genre = '';
+        if (['action', 'strategy', 'rpg', 'sports', 'simulation', 'casual', 'racing'].includes(args[0])) {
+            genre = args.shift();
+            genre = genre.charAt(0).toUpperCase() + genre.slice(1);
+        }
         const discordIds = message.discordMessage.mentions.users.map((discordUser) => {
             updateUserGames(discordUser.id);
             return discordUser.id;
@@ -44,15 +49,29 @@ export class PlayCommand implements ICommand {
             })
         );
 
+        let discordUserMatch: {
+            type: string;
+            'categories.description': string;
+            'genres.description'?: string;
+        } = {
+            type: 'game',
+            'categories.description': 'Multi-player',
+        };
+
+        if (genre) {
+            discordUserMatch = {
+                type: 'game',
+                'categories.description': 'Multi-player',
+                'genres.description': genre,
+            };
+        }
+
         // Get discord users and their games
         const discordUsers = await DiscordUserModel.find({
             discordUserId: { $in: discordIds },
         }).populate({
             path: 'games.games',
-            match: {
-                type: 'game',
-                'categories.description': 'Multi-player',
-            },
+            match: discordUserMatch,
         });
 
         const invalidTextIds = gameLists
@@ -121,11 +140,29 @@ export class PlayCommand implements ICommand {
             return;
         }
 
-        const games = await Game.find({
+        let gameFilter: {
+            steamAppId: {
+                $in: number[];
+            };
+            type: string;
+            'categories.description': string;
+            'genres.description'?: string;
+        } = {
             steamAppId: { $in: Object.keys(commonGames).map(Number) },
             type: 'game',
             'categories.description': 'Multi-player',
-        });
+        };
+
+        if (genre) {
+            gameFilter = {
+                steamAppId: { $in: Object.keys(commonGames).map(Number) },
+                type: 'game',
+                'categories.description': 'Multi-player',
+                'genres.description': genre,
+            };
+        }
+
+        const games = await Game.find(gameFilter);
 
         const threshold = CONFIG_COMMON_GAMES_THRESHOLD;
 
