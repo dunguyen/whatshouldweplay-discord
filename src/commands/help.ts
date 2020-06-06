@@ -27,6 +27,9 @@ export class HelpCommand implements ICommand {
                     .join(', ')
             );
             data.push(`You can send ${CONFIG_PREFIX} help [command name] to get info on a specific command.`);
+            data.push(
+                `Writing 'wswp' is the same as 'wswp play' so you can more quickly use the play command. Arguments are the same as the play command. See more by typing 'wswp help play.'`
+            );
 
             return message.sendDM(data);
         }
