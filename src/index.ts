@@ -85,7 +85,7 @@ client.on('message', async (message) => {
             }
 
             message.channel.send(reply);
-            return message.channel.stopTyping();
+            return message.channel.stopTyping(true);
         }
 
         // eslint-disable-next-line @typescript-eslint/await-thenable
@@ -99,6 +99,7 @@ client.on('message', async (message) => {
             discordUserId: message.author.id,
             result: true,
         });
+        return message.channel.stopTyping(true);
     } catch (error) {
         logger.error(`Error with command ${commandName}`, { error }, { message: message });
         logEvent({
@@ -110,8 +111,9 @@ client.on('message', async (message) => {
             discordUserId: message.author.id,
             result: true,
         });
+        return message.channel.stopTyping(true);
     }
-    return message.channel.stopTyping();
+    return message.channel.stopTyping(true);
 });
 
 client.login(DISCORD_TOKEN);
