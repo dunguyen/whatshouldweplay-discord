@@ -9,7 +9,7 @@ export type DiscordUserDocument = mongoose.Document & {
         accountId: string;
         gamertag?: string;
         lastUpdated?: Date;
-        games: { game: string; playtime: number }[] | { app: GameDocument; playtime: number }[];
+        games: { game: string; playtime: number }[] | { game: GameDocument; playtime: number }[];
     }[];
     updatedAt: Date;
 };

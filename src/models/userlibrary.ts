@@ -103,10 +103,11 @@ export const updateUserGames = async function (discordUserId: string, force = fa
     }
 
     if (
-        Math.floor(((Date.now() - user.updatedAt.getTime()) / 1000) * 60 * 60 * 24) >
+        Math.floor((Date.now() - user.updatedAt.getTime()) / (1000 * 60 * 60 * 24)) >
             CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS ||
         force
     ) {
+        logger.info('update user');
         const userGameAccounts = user.games.map((g) => {
             return { platform: g.platform, id: g.accountId };
         });

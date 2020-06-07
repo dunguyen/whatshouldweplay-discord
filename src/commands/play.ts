@@ -20,13 +20,20 @@ export class PlayCommand implements ICommand {
     dmOnly = false;
     admin = false;
     usage =
-        '[optional: action|strategy|rpg|sports|simulation|casual|racing] [any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
+        '[optional genre: action|strategy|rpg|sports|simulation|casual|racing] [optional sort: playtime] [any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
     async execute(message: Message, args: string[]): Promise<void> {
         const msg = [];
         let genre = '';
+        let sort = '';
         if (['action', 'strategy', 'rpg', 'sports', 'simulation', 'casual', 'racing'].includes(args[0])) {
             genre = args.shift();
             genre = genre.charAt(0).toUpperCase() + genre.slice(1);
+        }
+
+        if (['playtime'].includes(args[0])) {
+            sort = args.shift();
+        } else {
+            sort = 'random';
         }
 
         const discordIds = [];
@@ -88,7 +95,7 @@ export class PlayCommand implements ICommand {
         const discordUsers = await DiscordUserModel.find({
             discordUserId: { $in: discordIds },
         }).populate({
-            path: 'games.games',
+            path: 'games.games.game',
             match: discordUserMatch,
         });
 
@@ -117,7 +124,8 @@ export class PlayCommand implements ICommand {
             msg.push(unknownUsersMessage);
         }
 
-        const remainingUsers = args.length + discordIds.length - invalidTextIds.length - unknownDiscordUsers.length;
+        const remainingUsers =
+            sanitizedArgs.length + discordIds.length - invalidTextIds.length - unknownDiscordUsers.length;
         if (remainingUsers === 0) {
             msg.push(
                 `Could not find user info for anyone. Please ensure you have the correct steam username or link your profile using the 'wswp link' command`
@@ -127,28 +135,35 @@ export class PlayCommand implements ICommand {
         }
 
         // Construct the commonGames array
-        const commonGames = {} as { [gameId: number]: number };
+        const commonGames = {} as { [gameId: number]: { owned: number; cumulativePlaytime: number } };
         gameLists.forEach((gameList) => {
             gameList.steamAppIds.forEach((gameId) => {
                 if (commonGames[gameId.appId]) {
-                    commonGames[gameId.appId] = commonGames[gameId.appId] + 1;
+                    commonGames[gameId.appId] = {
+                        owned: commonGames[gameId.appId].owned + 1,
+                        cumulativePlaytime: commonGames[gameId.appId].cumulativePlaytime + gameId.playtime,
+                    };
                 } else {
-                    commonGames[gameId.appId] = 1;
+                    commonGames[gameId.appId] = { owned: 1, cumulativePlaytime: gameId.playtime };
                 }
             });
         });
         discordUsers.forEach((user) => {
             let mergedGames = [];
-            user.games.forEach((game) => {
-                mergedGames = [...mergedGames, ...game.games];
+            user.games.forEach((account) => {
+                mergedGames = [...mergedGames, ...account.games];
             });
             mergedGames
-                .filter((item, index) => mergedGames.indexOf(item) === index)
+                .filter((item) => item.game)
                 .forEach((game) => {
-                    if (commonGames[game.steamAppId]) {
-                        commonGames[game.steamAppId] = commonGames[game.steamAppId] + 1;
+                    const steamAppId = game.game.steamAppId;
+                    if (commonGames[steamAppId]) {
+                        commonGames[steamAppId] = {
+                            owned: commonGames[steamAppId].owned + 1,
+                            cumulativePlaytime: commonGames[steamAppId].cumulativePlaytime + game.playtime,
+                        };
                     } else {
-                        commonGames[game.steamAppId] = 1;
+                        commonGames[steamAppId] = { owned: 1, cumulativePlaytime: game.playtime };
                     }
                 });
         });
@@ -187,7 +202,7 @@ export class PlayCommand implements ICommand {
         msg.push(`Found games of ${remainingUsers} users`);
         const gameList = games
             .filter((game) => {
-                if (commonGames[game.steamAppId] / remainingUsers > threshold) {
+                if (commonGames[game.steamAppId].owned / remainingUsers > threshold) {
                     return true;
                 } else {
                     return false;
@@ -205,11 +220,20 @@ export class PlayCommand implements ICommand {
         logger.info(`Number of games above threshold: ${gameList.length}`);
 
         msg.push(`Number of players who own\tGame name`);
-        gameList
-            .sort((a, b) => (CONFIG_SHOW_GAMES_RANDM_ORDER ? 0.5 - Math.random() : b.occurrences - a.occurrences))
-            .splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
+        if (sort === 'playtime') {
+            gameList.sort(
+                (a, b) =>
+                    b.occurrences.cumulativePlaytime / b.occurrences.owned -
+                    a.occurrences.cumulativePlaytime / a.occurrences.owned
+            );
+        } else if (sort === 'random') {
+            gameList.sort((a, b) => 0.5 - Math.random());
+        } else {
+            gameList.sort((a, b) => b.occurrences.owned - a.occurrences.owned);
+        }
+        gameList.splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
         gameList.forEach((gameListEntry) => {
-            msg.push(`${gameListEntry.occurrences}\t${gameListEntry.name}`);
+            msg.push(`${gameListEntry.occurrences.owned}\t${gameListEntry.name}`);
         });
 
         message.sendToChannel(msg);
