@@ -101,7 +101,7 @@ client.on('message', async (message) => {
         });
         return message.channel.stopTyping(true);
     } catch (error) {
-        logger.error(`Error with command ${commandName}`, { error }, { message: message });
+        logger.error(`Error with command ${commandName}`, { error: error.message }, { message: message });
         logEvent({
             event: 'Command failed',
             commandName: commandName,

@@ -67,8 +67,11 @@ describe('request tests', () => {
         expect(axiosMock).toHaveBeenCalledTimes(1);
         expect(games.success).toBeTruthy();
         expect(games.steamAppIds).toHaveLength(2);
-        expect(games.steamAppIds).toContain(appId1);
-        expect(games.steamAppIds).toContain(appId2);
+        const appIds = games.steamAppIds.map((game) => {
+            return game.appId;
+        });
+        expect(appIds).toContain(appId1);
+        expect(appIds).toContain(appId2);
     });
 
     test('getOwnedSteamGames returns result if unsuccessful', async () => {

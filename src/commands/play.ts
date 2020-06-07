@@ -130,10 +130,10 @@ export class PlayCommand implements ICommand {
         const commonGames = {} as { [gameId: number]: number };
         gameLists.forEach((gameList) => {
             gameList.steamAppIds.forEach((gameId) => {
-                if (commonGames[gameId]) {
-                    commonGames[gameId] = commonGames[gameId] + 1;
+                if (commonGames[gameId.appId]) {
+                    commonGames[gameId.appId] = commonGames[gameId.appId] + 1;
                 } else {
-                    commonGames[gameId] = 1;
+                    commonGames[gameId.appId] = 1;
                 }
             });
         });
