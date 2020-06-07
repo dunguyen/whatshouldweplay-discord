@@ -16,7 +16,7 @@ const Game = getGameModel();
 export class PlayCommand implements ICommand {
     name = 'play';
     description = 'Finds multi-player games that you have in common';
-    args = true;
+    args = false;
     dmOnly = false;
     admin = false;
     usage =
@@ -28,10 +28,28 @@ export class PlayCommand implements ICommand {
             genre = args.shift();
             genre = genre.charAt(0).toUpperCase() + genre.slice(1);
         }
-        const discordIds = message.discordMessage.mentions.users.map((discordUser) => {
-            updateUserGames(discordUser.id);
-            return discordUser.id;
-        });
+
+        const discordIds = [];
+
+        if (args.length === 0 && message.discordMessage.guild && message.discordMessage.guild.available) {
+            const guildMembers = await message.discordMessage.guild.members.fetch();
+            const onlineGuildMembers = guildMembers.filter((member) => {
+                return member.presence.status === 'online';
+            });
+            discordIds.push(
+                ...onlineGuildMembers.map((discordUserId) => {
+                    updateUserGames(discordUserId.id);
+                    return discordUserId.id;
+                })
+            );
+        }
+
+        discordIds.push(
+            ...message.discordMessage.mentions.users.map((discordUser) => {
+                updateUserGames(discordUser.id);
+                return discordUser.id;
+            })
+        );
 
         const sanitizedArgs = args.filter((arg) => {
             return !arg.startsWith('<@!') && !arg.endsWith('>');
@@ -99,7 +117,7 @@ export class PlayCommand implements ICommand {
             msg.push(unknownUsersMessage);
         }
 
-        const remainingUsers = args.length - invalidTextIds.length - unknownDiscordUsers.length;
+        const remainingUsers = args.length + discordIds.length - invalidTextIds.length - unknownDiscordUsers.length;
         if (remainingUsers === 0) {
             msg.push(
                 `Could not find user info for anyone. Please ensure you have the correct steam username or link your profile using the 'wswp link' command`
