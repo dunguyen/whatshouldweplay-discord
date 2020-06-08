@@ -20,7 +20,7 @@ export class PlayCommand implements ICommand {
     dmOnly = false;
     admin = false;
     usage =
-        '[optional genre: action|strategy|rpg|sports|simulation|casual|racing] [optional sort: playtime] [any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
+        '[optional genre: action|strategy|rpg|sports|simulation|casual|racing] [optional sort: playtime|score] [any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
     async execute(message: Message, args: string[]): Promise<void> {
         const msg = [];
         let genre = '';
@@ -30,7 +30,7 @@ export class PlayCommand implements ICommand {
             genre = genre.charAt(0).toUpperCase() + genre.slice(1);
         }
 
-        if (['playtime'].includes(args[0])) {
+        if (['playtime', 'score'].includes(args[0])) {
             sort = args.shift();
         } else {
             sort = 'random';
@@ -209,9 +209,19 @@ export class PlayCommand implements ICommand {
                 }
             })
             .map((game) => {
+                let score = 0;
+                if (game.steamReviewScore && game.steamReviewScore.reviewScore) {
+                    score = game.steamReviewScore.reviewScore;
+                }
+                if (game.metacritic && game.metacritic.score) {
+                    score += game.metacritic.score;
+                    score /= 2;
+                }
                 return {
                     name: game.name,
-                    occurrences: commonGames[game.steamAppId],
+                    occurrences: commonGames[game.steamAppId].owned,
+                    cumulativePlaytime: commonGames[game.steamAppId].cumulativePlaytime,
+                    score: score,
                 };
             });
 
@@ -221,19 +231,17 @@ export class PlayCommand implements ICommand {
 
         msg.push(`Number of players who own\tGame name`);
         if (sort === 'playtime') {
-            gameList.sort(
-                (a, b) =>
-                    b.occurrences.cumulativePlaytime / b.occurrences.owned -
-                    a.occurrences.cumulativePlaytime / a.occurrences.owned
-            );
+            gameList.sort((a, b) => b.cumulativePlaytime / b.occurrences - a.cumulativePlaytime / a.occurrences);
+        } else if (sort === 'score') {
+            gameList.sort((a, b) => b.score - a.score);
         } else if (sort === 'random') {
             gameList.sort((a, b) => 0.5 - Math.random());
         } else {
-            gameList.sort((a, b) => b.occurrences.owned - a.occurrences.owned);
+            gameList.sort((a, b) => b.occurrences - a.occurrences);
         }
         gameList.splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
         gameList.forEach((gameListEntry) => {
-            msg.push(`${gameListEntry.occurrences.owned}\t${gameListEntry.name}`);
+            msg.push(`${gameListEntry.occurrences}\t${gameListEntry.name}`);
         });
 
         message.sendToChannel(msg);

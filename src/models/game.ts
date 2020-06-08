@@ -32,6 +32,11 @@ export type GameDocument = mongoose.Document & {
         comingSoon: boolean;
         date: string;
     };
+    steamReviewScore: {
+        reviewScore: number;
+        totalPositive: number;
+        totalNegative: number;
+    };
     updatedAt: Date;
 };
 
@@ -70,6 +75,11 @@ const gameSchema = new mongoose.Schema(
         releaseDate: {
             comingSoon: Boolean,
             date: String,
+        },
+        steamReviewScore: {
+            reviewScore: Number,
+            totalPositive: Number,
+            totalNegative: Number,
         },
         updatedAt: Date,
     },
