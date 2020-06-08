@@ -10,6 +10,7 @@ import logger from '../util/logger';
 import { Message } from '../util/message';
 import { getOwnedSteamGames, getSteamId } from '../util/request';
 import { updateUserGames } from '../models/userlibrary';
+import { getMedian } from '../util/math';
 
 const DiscordUserModel = getDiscordUserModel();
 const Game = getGameModel();
@@ -135,16 +136,14 @@ export class PlayCommand implements ICommand {
         }
 
         // Construct the commonGames array
-        const commonGames = {} as { [gameId: number]: { owned: number; cumulativePlaytime: number } };
+        const commonGames = {} as { [gameId: number]: { owned: number; playtimes: number[] } };
         gameLists.forEach((gameList) => {
             gameList.steamAppIds.forEach((gameId) => {
                 if (commonGames[gameId.appId]) {
-                    commonGames[gameId.appId] = {
-                        owned: commonGames[gameId.appId].owned + 1,
-                        cumulativePlaytime: commonGames[gameId.appId].cumulativePlaytime + gameId.playtime,
-                    };
+                    commonGames[gameId.appId].owned += 1;
+                    commonGames[gameId.appId].playtimes.push(gameId.playtime);
                 } else {
-                    commonGames[gameId.appId] = { owned: 1, cumulativePlaytime: gameId.playtime };
+                    commonGames[gameId.appId] = { owned: 1, playtimes: [gameId.playtime] };
                 }
             });
         });
@@ -158,12 +157,10 @@ export class PlayCommand implements ICommand {
                 .forEach((game) => {
                     const steamAppId = game.game.steamAppId;
                     if (commonGames[steamAppId]) {
-                        commonGames[steamAppId] = {
-                            owned: commonGames[steamAppId].owned + 1,
-                            cumulativePlaytime: commonGames[steamAppId].cumulativePlaytime + game.playtime,
-                        };
+                        commonGames[steamAppId].owned += 1;
+                        commonGames[steamAppId].playtimes.push(game.playtime);
                     } else {
-                        commonGames[steamAppId] = { owned: 1, cumulativePlaytime: game.playtime };
+                        commonGames[steamAppId] = { owned: 1, playtimes: game.playtime };
                     }
                 });
         });
@@ -220,7 +217,7 @@ export class PlayCommand implements ICommand {
                 return {
                     name: game.name,
                     occurrences: commonGames[game.steamAppId].owned,
-                    cumulativePlaytime: commonGames[game.steamAppId].cumulativePlaytime,
+                    medianPlaytime: getMedian(commonGames[game.steamAppId].playtimes),
                     score: score,
                 };
             });
@@ -231,7 +228,7 @@ export class PlayCommand implements ICommand {
 
         msg.push(`Number of players who own\tGame name`);
         if (sort === 'playtime') {
-            gameList.sort((a, b) => b.cumulativePlaytime / b.occurrences - a.cumulativePlaytime / a.occurrences);
+            gameList.sort((a, b) => b.medianPlaytime - a.medianPlaytime);
         } else if (sort === 'score') {
             gameList.sort((a, b) => b.score - a.score);
         } else if (sort === 'random') {
