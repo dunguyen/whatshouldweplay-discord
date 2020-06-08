@@ -5,14 +5,12 @@ export type GameDocument = mongoose.Document & {
     type: string;
     name: string;
     steamAppId: number;
-    isfree: boolean;
+    isFree: boolean;
     dlc: string[];
-    aboutTheGame: string;
-    headerImage: string;
-    website: string;
-    legalNotice: string;
-    developers: string[];
-    publishers: string[];
+    fullgame: {
+        appid: string;
+        name: string;
+    };
     plaforms: {
         windows: boolean;
         mac: boolean;
@@ -26,26 +24,15 @@ export type GameDocument = mongoose.Document & {
         id: number;
         description: string;
     }[];
-    screenshots: {
-        id: number;
-        pathThumbnail: string;
-        pathFull: string;
-    }[];
-    movies: {
-        id: number;
-        name: string;
-        thumbnail: string;
-        webm: {
-            480: string;
-            max: string;
-        };
-        highlight: boolean;
-    }[];
+    metacritic: {
+        score: number;
+        url: string;
+    };
     releaseDate: {
         comingSoon: boolean;
         date: string;
     };
-    background: string;
+    updatedAt: Date;
 };
 
 const gameSchema = new mongoose.Schema(
@@ -55,12 +42,10 @@ const gameSchema = new mongoose.Schema(
         steamAppId: Number,
         isFree: Boolean,
         dlc: [String],
-        aboutTheGame: String,
-        headerImage: String,
-        website: String,
-        legalNotice: String,
-        developers: [String],
-        publishers: [String],
+        fullgame: {
+            appid: String,
+            name: String,
+        },
         plaforms: {
             windows: Boolean,
             mac: Boolean,
@@ -78,30 +63,15 @@ const gameSchema = new mongoose.Schema(
                 description: String,
             },
         ],
-        screenshots: [
-            {
-                id: Number,
-                pathThumbnail: String,
-                pathFull: String,
-            },
-        ],
-        movies: [
-            {
-                id: Number,
-                name: String,
-                thumbnail: String,
-                webm: {
-                    480: String,
-                    max: String,
-                },
-                highlight: Boolean,
-            },
-        ],
+        metacritic: {
+            score: Number,
+            url: String,
+        },
         releaseDate: {
             comingSoon: Boolean,
             date: String,
         },
-        background: String,
+        updatedAt: Date,
     },
     { timestamps: true }
 );

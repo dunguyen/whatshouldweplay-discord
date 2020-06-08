@@ -37,7 +37,16 @@ describe('link command tests', () => {
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
                 return new Promise((resolve, reject) => {
-                    resolve({ success: true, steamAppIds: [1, 2, 3, 4], id: id });
+                    resolve({
+                        success: true,
+                        steamAppIds: [
+                            { appId: 1, playtime: 0 },
+                            { appId: 2, playtime: 0 },
+                            { appId: 3, playtime: 0 },
+                            { appId: 4, playtime: 0 },
+                        ],
+                        id: id,
+                    });
                 });
             })
             .mockClear();
@@ -70,7 +79,17 @@ describe('link command tests', () => {
         expect(Request.getSteamGamerTag).toHaveBeenCalledTimes(1);
         expect(Request.getOwnedSteamGames).toHaveBeenCalledTimes(1);
         expect(Userlibrary.linkSteamGames).toHaveBeenCalledTimes(1);
-        expect(Userlibrary.linkSteamGames).toHaveBeenCalledWith('authorid', '1234', [1, 2, 3, 4], 'gamertag');
+        expect(Userlibrary.linkSteamGames).toHaveBeenCalledWith(
+            'authorid',
+            '1234',
+            [
+                { appId: 1, playtime: 0 },
+                { appId: 2, playtime: 0 },
+                { appId: 3, playtime: 0 },
+                { appId: 4, playtime: 0 },
+            ],
+            'gamertag'
+        );
     });
 
     test('wswp link test error in linking', async () => {
@@ -91,7 +110,16 @@ describe('link command tests', () => {
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
                 return new Promise((resolve, reject) => {
-                    resolve({ success: true, steamAppIds: [1, 2, 3, 4], id: id });
+                    resolve({
+                        success: true,
+                        steamAppIds: [
+                            { appId: 1, playtime: 0 },
+                            { appId: 2, playtime: 0 },
+                            { appId: 3, playtime: 0 },
+                            { appId: 4, playtime: 0 },
+                        ],
+                        id: id,
+                    });
                 });
             })
             .mockClear();
@@ -125,7 +153,17 @@ describe('link command tests', () => {
         expect(Request.getSteamGamerTag).toHaveBeenCalledTimes(1);
         expect(Request.getOwnedSteamGames).toHaveBeenCalledTimes(1);
         expect(Userlibrary.linkSteamGames).toHaveBeenCalledTimes(1);
-        expect(Userlibrary.linkSteamGames).toHaveBeenCalledWith('authorid', '1234', [1, 2, 3, 4], 'gamertag');
+        expect(Userlibrary.linkSteamGames).toHaveBeenCalledWith(
+            'authorid',
+            '1234',
+            [
+                { appId: 1, playtime: 0 },
+                { appId: 2, playtime: 0 },
+                { appId: 3, playtime: 0 },
+                { appId: 4, playtime: 0 },
+            ],
+            'gamertag'
+        );
     });
 
     test('wswp link test error, no games', async () => {
