@@ -10,7 +10,7 @@ const GameModel = getGameModel();
 export const linkSteamGames = async function (
     discordId: string,
     accountId: string,
-    steamAppIds: number[],
+    steamAppIds: { appId: number; playtime: number }[],
     steamGamerTag: string
 ): Promise<{ success: boolean; error: string }> {
     const existingLink = await DiscordUserModel.find({
@@ -23,7 +23,20 @@ export const linkSteamGames = async function (
         return { success: false, error: 'I have already linked this account with your discord.' };
     }
 
-    const games = await GameModel.find({ steamAppId: { $in: steamAppIds } }, { _id: 1 });
+    const appIds = steamAppIds.map((game) => {
+        return game.appId;
+    });
+    const games = await GameModel.find({ steamAppId: { $in: appIds } }, { _id: 1, steamAppId: 1 });
+    const gamesWithPlaytime = games.map((g) => {
+        const matchedGame = steamAppIds.find((element) => {
+            return element.appId == g.steamAppId;
+        });
+        const playtime = matchedGame ? matchedGame.playtime : 0;
+        return {
+            game: g.id,
+            playtime: playtime,
+        };
+    });
 
     const filter = { discordUserId: discordId };
     const update = {
@@ -33,9 +46,7 @@ export const linkSteamGames = async function (
                 accountId: accountId,
                 gamertag: steamGamerTag,
                 $currentDate: { lastUpdated: true },
-                games: games.map((game) => {
-                    return game.id;
-                }),
+                games: gamesWithPlaytime,
             },
         },
     };
@@ -92,10 +103,11 @@ export const updateUserGames = async function (discordUserId: string, force = fa
     }
 
     if (
-        Math.floor(((Date.now() - user.updatedAt.getTime()) / 1000) * 60 * 60 * 24) >
+        Math.floor((Date.now() - user.updatedAt.getTime()) / (1000 * 60 * 60 * 24)) >
             CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS ||
         force
     ) {
+        logger.info('update user');
         const userGameAccounts = user.games.map((g) => {
             return { platform: g.platform, id: g.accountId };
         });

@@ -44,31 +44,27 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-    if (!message.content.startsWith(CONFIG_PREFIX) || message.author.bot) {
+    if ((!message.content.startsWith(CONFIG_PREFIX) && message.guild) || message.author.bot) {
         return;
     }
 
-    const args = message.content.split(/ +/).slice(1);
+    const args =
+        message.content.split(/ +/)[0] === CONFIG_PREFIX
+            ? message.content.split(/ +/).slice(1)
+            : message.content.split(/ +/);
+
     if (!args.length) {
-        return;
+        args.splice(0, 0, 'play');
     }
-    const commandName = args.shift().toLowerCase();
+    let commandName = args[0].toLowerCase();
 
     if (!commands.has(commandName)) {
-        logger.info(`Command: ${commandName} not found`);
-        logEvent({
-            event: 'Unknown command',
-            commandName: commandName,
-            channelId: message.channel.id,
-            channelType: message.channel.type,
-            commandArgs: args,
-            discordUserId: message.author.id,
-        });
-        return;
+        commandName = 'play';
+    } else {
+        args.shift();
     }
 
     const command = commands.get(commandName);
-
     try {
         message.channel.startTyping();
 
@@ -92,7 +88,7 @@ client.on('message', async (message) => {
             }
 
             message.channel.send(reply);
-            return message.channel.stopTyping();
+            return message.channel.stopTyping(true);
         }
 
         // eslint-disable-next-line @typescript-eslint/await-thenable
@@ -102,23 +98,25 @@ client.on('message', async (message) => {
             commandName: commandName,
             channelId: message.channel.id,
             channelType: message.channel.type,
-            commandArgs: args,
+            commandArgs: args.length,
             discordUserId: message.author.id,
             result: true,
         });
+        return message.channel.stopTyping(true);
     } catch (error) {
-        logger.error(`Error with command ${commandName}`, { error }, { message: message });
+        logger.error(`Error with command ${commandName}`, { error: error.message }, { message: message });
         logEvent({
             event: 'Command failed',
             commandName: commandName,
             channelId: message.channel.id,
             channelType: message.channel.type,
-            commandArgs: args,
+            commandArgs: args.length,
             discordUserId: message.author.id,
             result: true,
         });
+        return message.channel.stopTyping(true);
     }
-    return message.channel.stopTyping();
+    return message.channel.stopTyping(true);
 });
 
 client.login(DISCORD_TOKEN);
