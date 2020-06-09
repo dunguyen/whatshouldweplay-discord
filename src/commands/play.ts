@@ -52,6 +52,10 @@ export class PlayCommand implements ICommand {
             );
         }
 
+        if (args.length === 0 && !message.discordMessage.guild) {
+            discordIds.push(message.getAuthorId());
+        }
+
         discordIds.push(
             ...message.discordMessage.mentions.users.map((discordUser) => {
                 updateUserGames(discordUser.id);
@@ -160,7 +164,7 @@ export class PlayCommand implements ICommand {
                         commonGames[steamAppId].owned += 1;
                         commonGames[steamAppId].playtimes.push(game.playtime);
                     } else {
-                        commonGames[steamAppId] = { owned: 1, playtimes: game.playtime };
+                        commonGames[steamAppId] = { owned: 1, playtimes: [game.playtime] };
                     }
                 });
         });
