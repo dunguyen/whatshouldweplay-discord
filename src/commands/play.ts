@@ -132,6 +132,7 @@ export class PlayCommand implements ICommand {
 
         const remainingUsers =
             sanitizedArgs.length + discordIds.length - invalidTextIds.length - unknownDiscordUsers.length;
+        const remainingUsers = args.length - invalidTextIds.length - unknownDiscordUsers.length;
         if (remainingUsers === 0) {
             msg.push(
                 `Could not find user info for anyone. Please ensure you have the correct steam username or link your profile using the 'wswp link' command`
