@@ -10,6 +10,7 @@ export class HelpCommand implements ICommand {
     usage = '[command name]';
     dmOnly = false;
     admin = false;
+    examples = ['play', 'link'];
     execute(message: Message, args: string[]): Promise<void> {
         const data: string[] = [];
         const commands = getCommands();
@@ -28,9 +29,9 @@ export class HelpCommand implements ICommand {
             );
             data.push(`You can send ${CONFIG_PREFIX} help [command name] to get info on a specific command.`);
             data.push(
-                `Writing '${CONFIG_PREFIX}' is the same as '${CONFIG_PREFIX} play' so you can more quickly use the play command. Arguments are the same as the play command. See more by typing '${CONFIG_PREFIX} help play.'`
+                `TIP: Writing '${CONFIG_PREFIX}' is the same as '${CONFIG_PREFIX} play' so you can more quickly use the play command. Arguments are the same as the play command. See more by typing '${CONFIG_PREFIX} help play.'`
             );
-            data.push(`In a DM to me, you don't need to prefix the command with ${CONFIG_PREFIX}`);
+            data.push(`TIP: In a DM to me, you don't need to prefix the command with ${CONFIG_PREFIX}`);
 
             return message.sendDM(data);
         }
@@ -48,6 +49,11 @@ export class HelpCommand implements ICommand {
             data.push(`Description: ${command.description}`);
         }
         data.push(`How to use: ${CONFIG_PREFIX} ${command.name} ${command.usage}`);
+        if (command.examples) {
+            command.examples.forEach((example) => {
+                data.push(`Example: ${CONFIG_PREFIX} ${command.name} ${example}`);
+            });
+        }
         if (command.dmOnly) {
             data.push(`This command will only work if you DM me to avoid spamming the channel`);
         }
