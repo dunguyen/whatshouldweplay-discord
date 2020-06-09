@@ -44,11 +44,14 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-    if (!message.content.startsWith(CONFIG_PREFIX) || message.author.bot) {
+    if ((!message.content.startsWith(CONFIG_PREFIX) && message.guild) || message.author.bot) {
         return;
     }
 
-    const args = message.content.split(/ +/).slice(1);
+    const args =
+        message.content.split(/ +/)[0] === CONFIG_PREFIX
+            ? message.content.split(/ +/).slice(1)
+            : message.content.split(/ +/);
 
     if (!args.length) {
         args.splice(0, 0, 'play');
