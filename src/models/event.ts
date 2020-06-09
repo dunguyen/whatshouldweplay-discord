@@ -6,7 +6,7 @@ export type AnalyticsEvent = {
     channelType: string;
     discordUserId: string;
     commandName: string;
-    commandArgs: string[];
+    commandArgs: number;
     result?: boolean;
     event: string;
     eventDetails?: unknown;
@@ -20,7 +20,7 @@ const EventSchema = new mongoose.Schema(
         channelType: String,
         discordUserId: String,
         commandName: String,
-        commandArgs: [String],
+        commandArgs: Number,
         result: { type: Boolean, default: 'false' },
         event: String,
         eventDetails: Schema.Types.Mixed,
