@@ -98,7 +98,7 @@ client.on('message', async (message) => {
             commandName: commandName,
             channelId: message.channel.id,
             channelType: message.channel.type,
-            commandArgs: args,
+            commandArgs: args.length,
             discordUserId: message.author.id,
             result: true,
         });
@@ -110,7 +110,7 @@ client.on('message', async (message) => {
             commandName: commandName,
             channelId: message.channel.id,
             channelType: message.channel.type,
-            commandArgs: args,
+            commandArgs: args.length,
             discordUserId: message.author.id,
             result: true,
         });
