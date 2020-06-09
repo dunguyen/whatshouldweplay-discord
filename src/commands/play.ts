@@ -198,7 +198,6 @@ export class PlayCommand implements ICommand {
         }
 
         const games = await Game.find(gameFilter);
-
         const threshold = CONFIG_COMMON_GAMES_THRESHOLD;
 
         msg.push(`Found games of ${remainingUsers} users`);
