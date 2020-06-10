@@ -1,11 +1,7 @@
 import { getDiscordUserModel } from '../models/discorduser';
 import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
-import {
-    CONFIG_COMMON_GAMES_THRESHOLD,
-    CONFIG_NUMBER_OF_GAMES_DISPLAYED,
-    CONFIG_SHOW_GAMES_RANDM_ORDER,
-} from '../util/config';
+import { CONFIG_NUMBER_OF_GAMES_DISPLAYED, CONFIG_SHOW_GAMES_RANDM_ORDER } from '../util/config';
 import logger from '../util/logger';
 import { Message } from '../util/message';
 import { getOwnedSteamGames, getSteamId } from '../util/request';
@@ -199,12 +195,24 @@ export class PlayCommand implements ICommand {
 
         const games = await Game.find(gameFilter);
 
-        const threshold = CONFIG_COMMON_GAMES_THRESHOLD;
+        let threshold = 1;
+        while (
+            games.filter((g) => {
+                if (commonGames[g.steamAppId].owned / remainingUsers >= threshold) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }).length < CONFIG_NUMBER_OF_GAMES_DISPLAYED ||
+            threshold < 0
+        ) {
+            threshold -= 0.1;
+        }
 
         msg.push(`Found games of ${remainingUsers} users`);
         const gameList = games
             .filter((game) => {
-                if (commonGames[game.steamAppId].owned / remainingUsers > threshold) {
+                if (commonGames[game.steamAppId].owned / remainingUsers >= threshold) {
                     return true;
                 } else {
                     return false;
@@ -229,7 +237,7 @@ export class PlayCommand implements ICommand {
 
         logger.info(`Number of games found: ${games.length}`);
         msg.push(`${CONFIG_NUMBER_OF_GAMES_DISPLAYED} Multi-player games you have in common:`);
-        logger.info(`Number of games above threshold: ${gameList.length}`);
+        logger.info(`Number of games above threshold: ${gameList.length}, threshold: ${threshold}`);
 
         msg.push(`Number of players who own\tGame name`);
         if (sort === 'playtime') {
