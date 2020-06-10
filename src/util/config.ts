@@ -28,10 +28,6 @@ export const CONFIG_NUMBER_OF_GAMES_DISPLAYED = process.env.CONFIG_NUMBER_OF_GAM
     ? parseInt(process.env.CONFIG_NUMBER_OF_GAMES_DISPLAYED, 10)
     : 10;
 
-export const CONFIG_COMMON_GAMES_THRESHOLD = process.env.CONFIG_COMMON_GAMES_THRESHOLD
-    ? parseInt(process.env.CONFIG_COMMON_GAMES_THRESHOLD, 10)
-    : 0.8;
-
 export const CONFIG_SHOW_GAMES_RANDM_ORDER = process.env.CONFIG_SHOW_GAMES_RANDM_ORDER
     ? process.env.CONFIG_SHOW_GAMES_RANDM_ORDER
     : true;
