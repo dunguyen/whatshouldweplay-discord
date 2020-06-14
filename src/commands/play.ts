@@ -39,7 +39,7 @@ export class PlayCommand implements ICommand {
         if (args.length === 0 && message.discordMessage.guild && message.discordMessage.guild.available) {
             const guildMembers = await message.discordMessage.guild.members.fetch();
             const onlineGuildMembers = guildMembers.filter((member) => {
-                return member.presence.status === 'online';
+                return member.presence.status === 'online' && !member.user.bot;
             });
             discordIds.push(
                 ...onlineGuildMembers.map((discordUserId) => {
