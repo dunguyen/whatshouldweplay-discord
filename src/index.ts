@@ -44,19 +44,19 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-    if ((!message.content.startsWith(CONFIG_PREFIX) && message.guild) || message.author.bot) {
+    if ((!message.content.toLowerCase().startsWith(CONFIG_PREFIX) && message.guild) || message.author.bot) {
         return;
     }
 
     const args =
-        message.content.split(/ +/)[0] === CONFIG_PREFIX
-            ? message.content.split(/ +/).slice(1)
-            : message.content.split(/ +/);
+        message.content.split(/ +/)[0].toLowerCase() === CONFIG_PREFIX
+            ? message.content.toLowerCase().split(/ +/).slice(1)
+            : message.content.toLowerCase().split(/ +/);
 
     if (!args.length) {
         args.splice(0, 0, 'play');
     }
-    let commandName = args[0].toLowerCase();
+    let commandName = args[0];
 
     if (!commands.has(commandName)) {
         commandName = 'play';

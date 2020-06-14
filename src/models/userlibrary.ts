@@ -77,7 +77,7 @@ export const unLinkSteamGames = async function (
     const discordUser = await DiscordUserModel.findOne(filter);
 
     discordUser.games = discordUser.games.filter((game) => {
-        return !gamertags.includes(game.gamertag) && !gamertags.includes(game.accountId);
+        return !gamertags.includes(game.gamertag.toLowerCase()) && !gamertags.includes(game.accountId.toLowerCase());
     });
 
     if (discordUser.games.length === 0) {
