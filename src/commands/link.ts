@@ -5,7 +5,8 @@ import { linkSteamGames } from '../models/userlibrary';
 
 export class LinkCommand implements ICommand {
     name = 'link';
-    description = 'Links your discord user with the provided steam id or username';
+    description =
+        'Links your discord user with the provided steam id or username. Doing so will save your account id as well as any games that you own. To delete your data, use the delete command';
     args = true;
     usage = '[steam username/id]';
     dmOnly = true;
