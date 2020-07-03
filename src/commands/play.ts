@@ -1,12 +1,14 @@
 import { getDiscordUserModel } from '../models/discorduser';
 import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
-import { CONFIG_NUMBER_OF_GAMES_DISPLAYED, CONFIG_SHOW_GAMES_RANDM_ORDER } from '../util/config';
+import { CONFIG_NUMBER_OF_GAMES_DISPLAYED } from '../util/config';
 import logger from '../util/logger';
 import { Message } from '../util/message';
 import { getOwnedSteamGames, getSteamId } from '../util/request';
 import { updateUserGames } from '../models/userlibrary';
-import { getMedian } from '../util/math';
+import { getMedian, getCapitalizedString } from '../util/helpers';
+import { Genre } from '../util/genre';
+import { SortOptions } from '../util/sortoptions';
 
 const DiscordUserModel = getDiscordUserModel();
 const Game = getGameModel();
@@ -17,21 +19,24 @@ export class PlayCommand implements ICommand {
     dmOnly = false;
     admin = false;
     examples = ['', '@mention @mention mysteamid'];
-    usage =
-        '[optional genre: action|strategy|rpg|sports|simulation|casual|racing] [optional sort: playtime|score] [any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]';
+    usage = `[optional genre: ${Object.values(Genre).map((x) => x)}] [optional sort: ${Object.values(SortOptions).map(
+        (x) => x
+    )}] [any number of @mentions, steam username, steam id separated by a space. Steam usernames and ids can be found through logging into https://steamcommunity.com/ and when on the profile, check the value in the URL. Etc. https://steamcommunity.com/id/<your steam username or id>]`;
     async execute(message: Message, args: string[]): Promise<void> {
         const msg = [];
-        let genre = '';
-        let sort = '';
-        if (['action', 'strategy', 'rpg', 'sports', 'simulation', 'casual', 'racing'].includes(args[0])) {
-            genre = args.shift();
-            genre = genre.charAt(0).toUpperCase() + genre.slice(1);
+        let genre: Genre;
+        let sort: SortOptions;
+
+        if (Genre[getCapitalizedString(args[0])]) {
+            genre = Genre[getCapitalizedString(args[0])];
+            args.shift();
         }
 
-        if (['playtime', 'score'].includes(args[0])) {
-            sort = args.shift();
+        if (SortOptions[getCapitalizedString(args[0])]) {
+            sort = SortOptions[getCapitalizedString(args[0])];
+            args.shift();
         } else {
-            sort = 'random';
+            sort = SortOptions.Random;
         }
 
         const discordIds = [];
@@ -240,11 +245,11 @@ export class PlayCommand implements ICommand {
         logger.info(`Number of games above threshold: ${gameList.length}, threshold: ${threshold}`);
 
         msg.push(`Number of players who own\tGame name`);
-        if (sort === 'playtime') {
+        if (sort === SortOptions.Playtime) {
             gameList.sort((a, b) => b.medianPlaytime - a.medianPlaytime);
-        } else if (sort === 'score') {
+        } else if (sort === SortOptions.Score) {
             gameList.sort((a, b) => b.score - a.score);
-        } else if (sort === 'random') {
+        } else if (sort === SortOptions.Random) {
             gameList.sort((a, b) => 0.5 - Math.random());
         } else {
             gameList.sort((a, b) => b.occurrences - a.occurrences);
