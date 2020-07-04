@@ -1,6 +1,6 @@
 import { ICommand } from '../types/ICommand';
 import { Message } from '../util/message';
-import { updateUserGames, getCommonGames } from '../models/userlibrary';
+import { getCommonGames } from '../models/userlibrary';
 import { getCapitalizedString } from '../util/helpers';
 import { Genre } from '../util/genre';
 import { SortOptions } from '../util/sortoptions';
