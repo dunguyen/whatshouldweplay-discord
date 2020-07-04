@@ -133,6 +133,7 @@ describe('message tests', () => {
     test('sendToChannel with DM Channel', () => {
         const discordMessageMock = new DiscordMessage(undefined, undefined, undefined);
         discordMessageMock.channel = new DMChannel(undefined);
+        discordMessageMock.channel.type = 'dm';
         const message = new Message(discordMessageMock);
         const msg = generateTestString();
 
