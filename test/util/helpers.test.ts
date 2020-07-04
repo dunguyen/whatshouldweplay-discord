@@ -92,4 +92,20 @@ describe('helpers tests', () => {
 
         expect(result).toBe('T');
     });
+
+    test('getCapitalizedString returns empty for undefined', () => {
+        const testString = undefined;
+
+        const result = getCapitalizedString(testString);
+
+        expect(result).toBe('');
+    });
+
+    test('getCapitalizedString returns empty for null', () => {
+        const testString = null;
+
+        const result = getCapitalizedString(testString);
+
+        expect(result).toBe('');
+    });
 });

@@ -1,5 +1,7 @@
 import * as Discord from 'discord.js';
 import logger from './logger';
+import { updateUserGames } from '../models/userlibrary';
+import { resolve } from 'path';
 
 export class Message {
     discordMessage: Discord.Message;
@@ -32,5 +34,33 @@ export class Message {
 
     getAuthorId(): string {
         return this.discordMessage.author.id;
+    }
+
+    getMentionIds(): string[] {
+        return this.discordMessage.mentions.users.map((discordUser) => {
+            updateUserGames(discordUser.id);
+            return discordUser.id;
+        });
+    }
+
+    isGuild(): boolean {
+        return this.discordMessage.guild && this.discordMessage.guild.available;
+    }
+
+    async getOnlineGuildMemberIds(): Promise<string[]> {
+        if (!this.isGuild()) {
+            return new Promise<string[]>((resolve) => {
+                resolve([]);
+            });
+        }
+
+        const guildMembers = await this.discordMessage.guild.members.fetch();
+        const onlineGuildMembers = guildMembers.filter((member) => {
+            return member.presence.status === 'online' && !member.user.bot;
+        });
+        return onlineGuildMembers.map((discordUserId) => {
+            updateUserGames(discordUserId.id);
+            return discordUserId.id;
+        });
     }
 }

@@ -34,30 +34,14 @@ export class PlayCommand implements ICommand {
         }
 
         const discordIds: string[] = [];
+        const guildDiscordIds = await message.getOnlineGuildMemberIds();
+        discordIds.push(...guildDiscordIds);
 
-        if (args.length === 0 && message.discordMessage.guild && message.discordMessage.guild.available) {
-            const guildMembers = await message.discordMessage.guild.members.fetch();
-            const onlineGuildMembers = guildMembers.filter((member) => {
-                return member.presence.status === 'online' && !member.user.bot;
-            });
-            discordIds.push(
-                ...onlineGuildMembers.map((discordUserId) => {
-                    updateUserGames(discordUserId.id);
-                    return discordUserId.id;
-                })
-            );
-        }
-
-        if (args.length === 0 && !message.discordMessage.guild) {
+        if (args.length === 0 && !message.isGuild()) {
             discordIds.push(message.getAuthorId());
         }
 
-        discordIds.push(
-            ...message.discordMessage.mentions.users.map((discordUser) => {
-                updateUserGames(discordUser.id);
-                return discordUser.id;
-            })
-        );
+        discordIds.push(...message.getMentionIds());
 
         const nonDiscordIds = args.filter((arg) => {
             return !arg.startsWith('<@!') && !arg.endsWith('>');
