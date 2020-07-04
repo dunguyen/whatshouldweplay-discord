@@ -1,5 +1,3 @@
-import { getDiscordUserModel } from '../models/discorduser';
-import { getGameModel } from '../models/game';
 import { ICommand } from '../types/ICommand';
 import { Message } from '../util/message';
 import { updateUserGames, getCommonGames } from '../models/userlibrary';
@@ -8,8 +6,6 @@ import { Genre } from '../util/genre';
 import { SortOptions } from '../util/sortoptions';
 import { Player } from '../models/player';
 
-const DiscordUserModel = getDiscordUserModel();
-const Game = getGameModel();
 export class PlayCommand implements ICommand {
     name = 'play';
     description = 'Finds multi-player games that you have in common';
@@ -82,7 +78,7 @@ export class PlayCommand implements ICommand {
 
         await Promise.all(
             players.map((player) => {
-                return player.populateGames();
+                return player.populateGames(genre);
             })
         );
 
