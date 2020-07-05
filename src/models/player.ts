@@ -90,7 +90,6 @@ export class Player {
         });
 
         if (discordUser.length !== 1) {
-            //TODO: Error
             return;
         }
 
@@ -99,7 +98,6 @@ export class Player {
                 if (!g.game) {
                     return;
                 }
-                //TODO: cast g into {game, playtime}
                 let playtime = g.playtime;
 
                 if (this.games.has(g.game.id)) {
@@ -131,6 +129,6 @@ export class Player {
     }
 
     getPrintableDiscordUserID(): string {
-        return `<@${this.discordUserId}> `;
+        return this.discordUserId ? `<@${this.discordUserId}>` : '';
     }
 }

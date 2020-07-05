@@ -27,7 +27,7 @@ describe('link command tests', () => {
         const getSteamIdMock = jest
             .spyOn(Request, 'getSteamId')
             .mockImplementation((username) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve('1234');
                 });
             })
@@ -36,7 +36,7 @@ describe('link command tests', () => {
         const getOwnedSteamGamesMock = jest
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({
                         success: true,
                         steamAppIds: [
@@ -54,7 +54,7 @@ describe('link command tests', () => {
         const getSteamGamerTagMock = jest
             .spyOn(Request, 'getSteamGamerTag')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({ success: true, steamGamerTag: 'gamertag' });
                 });
             })
@@ -63,7 +63,7 @@ describe('link command tests', () => {
         const linkSteamGamesMock = jest
             .spyOn(Userlibrary, 'linkSteamGames')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({ success: true, error: '' });
                 });
             })
@@ -100,7 +100,7 @@ describe('link command tests', () => {
         const getSteamIdMock = jest
             .spyOn(Request, 'getSteamId')
             .mockImplementation((username) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve('1234');
                 });
             })
@@ -109,7 +109,7 @@ describe('link command tests', () => {
         const getOwnedSteamGamesMock = jest
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({
                         success: true,
                         steamAppIds: [
@@ -127,7 +127,7 @@ describe('link command tests', () => {
         const getSteamGamerTagMock = jest
             .spyOn(Request, 'getSteamGamerTag')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({ success: true, steamGamerTag: 'gamertag' });
                 });
             })
@@ -136,7 +136,7 @@ describe('link command tests', () => {
         const linkSteamGamesMock = jest
             .spyOn(Userlibrary, 'linkSteamGames')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({ success: false, error: 'error message' });
                 });
             })
@@ -174,7 +174,7 @@ describe('link command tests', () => {
         const getSteamIdMock = jest
             .spyOn(Request, 'getSteamId')
             .mockImplementation((username) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve('1234');
                 });
             })
@@ -183,7 +183,7 @@ describe('link command tests', () => {
         const getOwnedSteamGamesMock = jest
             .spyOn(Request, 'getOwnedSteamGames')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({ success: false, steamAppIds: [], id: id });
                 });
             })
@@ -192,7 +192,7 @@ describe('link command tests', () => {
         const getSteamGamerTagMock = jest
             .spyOn(Request, 'getSteamGamerTag')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({ success: true, steamGamerTag: 'gamertag' });
                 });
             })
@@ -201,7 +201,7 @@ describe('link command tests', () => {
         const linkSteamGamesMock = jest
             .spyOn(Userlibrary, 'linkSteamGames')
             .mockImplementation((id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     resolve({ success: false, error: 'error message' });
                 });
             })
