@@ -1,8 +1,11 @@
-import { getDiscordUserModel } from './discorduser';
-import { getGameModel } from './game';
+import { CONFIG_NUMBER_OF_GAMES_DISPLAYED, CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS } from '../util/config';
+import { getMedian } from '../util/helpers';
 import logger from '../util/logger';
-import { CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS } from '../util/config';
 import { getOwnedSteamGames, getSteamGamerTag } from '../util/request';
+import { SortOptions } from '../util/sortoptions';
+import { getDiscordUserModel } from './discorduser';
+import { GameDocument, getGameModel } from './game';
+import { Player } from './player';
 
 const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();
@@ -122,4 +125,84 @@ export const updateUserGames = async function (discordUserId: string, force = fa
 
         user.save();
     }
+};
+
+export const getCommonGames = function (players: Player[], sort?: SortOptions): string[] {
+    const messages: string[] = [];
+
+    const commonGames = new Map<string, { game: GameDocument; playtimes: number[]; owned: Player[] }>();
+    players.forEach((player) => {
+        player.games.forEach((gameData) => {
+            if (commonGames.has(gameData.game.id)) {
+                const commonGame = commonGames.get(gameData.game.id);
+                commonGame.owned.push(player);
+                commonGame.playtimes.push(gameData.playtime);
+                commonGames.set(gameData.game.id, commonGame);
+            } else {
+                commonGames.set(gameData.game.id, {
+                    game: gameData.game,
+                    playtimes: [gameData.playtime],
+                    owned: [player],
+                });
+            }
+        });
+    });
+
+    const games = Array.from(commonGames.values());
+    let threshold = 1;
+    while (
+        games.filter((g) => {
+            if (g.owned.length / players.length >= threshold) {
+                return true;
+            } else {
+                return false;
+            }
+        }).length < CONFIG_NUMBER_OF_GAMES_DISPLAYED ||
+        threshold < 0
+    ) {
+        threshold -= 0.1;
+    }
+
+    const gameList = games
+        .filter((gameData) => {
+            if (gameData.owned.length / players.length >= threshold) {
+                return true;
+            } else {
+                return false;
+            }
+        })
+        .map((gameData) => {
+            let score = 0;
+            if (gameData.game.steamReviewScore && gameData.game.steamReviewScore.reviewScore) {
+                score = gameData.game.steamReviewScore.reviewScore;
+            }
+            if (gameData.game.metacritic && gameData.game.metacritic.score) {
+                score += gameData.game.metacritic.score;
+                score /= 2;
+            }
+            return {
+                name: gameData.game.name,
+                numberOwned: gameData.owned.length,
+                medianPlaytime: getMedian(gameData.playtimes),
+                score: score,
+            };
+        });
+
+    messages.push(`${CONFIG_NUMBER_OF_GAMES_DISPLAYED} Multi-player games you have in common:`);
+
+    messages.push(`Number of players who own\tGame name`);
+    if (sort === SortOptions.Playtime) {
+        gameList.sort((a, b) => b.medianPlaytime - a.medianPlaytime);
+    } else if (sort === SortOptions.Score) {
+        gameList.sort((a, b) => b.score - a.score);
+    } else if (sort === SortOptions.Random) {
+        gameList.sort((a, b) => 0.5 - Math.random());
+    } else {
+        gameList.sort((a, b) => b.numberOwned - a.numberOwned);
+    }
+    gameList.splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
+    gameList.forEach((gameListEntry) => {
+        messages.push(`${gameListEntry.numberOwned}\t${gameListEntry.name}`);
+    });
+    return messages;
 };
