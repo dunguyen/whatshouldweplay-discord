@@ -6,6 +6,7 @@ import { SortOptions } from '../util/sortoptions';
 import { getDiscordUserModel } from './discorduser';
 import { GameDocument, getGameModel } from './game';
 import { Player } from './player';
+import { release } from 'os';
 
 const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();
@@ -185,20 +186,31 @@ export const getCommonGames = function (players: Player[], sort?: SortOptions): 
                 numberOwned: gameData.owned.length,
                 medianPlaytime: getMedian(gameData.playtimes),
                 score: score,
+                release: gameData.game.releaseDate.date
+                    ? new Date(Date.parse(gameData.game.releaseDate.date))
+                    : new Date('1 Jan 2008'),
             };
         });
 
     messages.push(`${CONFIG_NUMBER_OF_GAMES_DISPLAYED} Multi-player games you have in common:`);
 
     messages.push(`Number of players who own\tGame name`);
-    if (sort === SortOptions.Playtime) {
-        gameList.sort((a, b) => b.medianPlaytime - a.medianPlaytime);
-    } else if (sort === SortOptions.Score) {
-        gameList.sort((a, b) => b.score - a.score);
-    } else if (sort === SortOptions.Random) {
-        gameList.sort((a, b) => 0.5 - Math.random());
-    } else {
-        gameList.sort((a, b) => b.numberOwned - a.numberOwned);
+    switch (sort) {
+        case SortOptions.Playtime:
+            gameList.sort((a, b) => b.medianPlaytime - a.medianPlaytime);
+            break;
+        case SortOptions.Score:
+            gameList.sort((a, b) => b.score - a.score);
+            break;
+        case SortOptions.Random:
+            gameList.sort((a, b) => 0.5 - Math.random());
+            break;
+        case SortOptions.Release:
+            gameList.sort((a, b) => b.release.getTime() - a.release.getTime());
+            break;
+        default:
+            gameList.sort((a, b) => b.numberOwned - a.numberOwned);
+            break;
     }
     gameList.splice(CONFIG_NUMBER_OF_GAMES_DISPLAYED);
     gameList.forEach((gameListEntry) => {
