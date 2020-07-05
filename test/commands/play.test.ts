@@ -314,4 +314,44 @@ describe('play command tests', () => {
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(3);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Playtime);
     });
+
+    test('wswp play in dm channel', async () => {
+        const playCommand = new PlayCommand();
+        const message = new Message(undefined);
+        const args: string[] = [];
+
+        message.getOnlineGuildMemberIds = jest.fn(() => {
+            return new Promise<string[]>((resolve) => {
+                resolve([]);
+            });
+        });
+
+        message.isGuild = jest.fn(() => {
+            return false;
+        });
+
+        message.getAuthorId = jest.fn(() => {
+            return 'dm user';
+        });
+
+        message.getMentionIds = jest.fn(() => {
+            return [];
+        });
+
+        Player.prototype.populateGames = (genre?) => {
+            return new Promise<void>((resolve) => {
+                resolve();
+            });
+        };
+
+        Player.prototype.hasGames = () => {
+            return true;
+        };
+
+        await playCommand.execute(message, args);
+        expect(message.sendToChannel).toBeCalledTimes(1);
+        expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(1);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Random);
+    });
 });
