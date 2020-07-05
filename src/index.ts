@@ -2,11 +2,11 @@ import * as Discord from 'discord.js';
 import mongoose from 'mongoose';
 
 import { getGameModel } from './models/game';
-import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX, setBotId } from './util/config';
-import logger from './util/logger';
-import { getCommands } from './util/commands';
-import { Message } from './util/message';
 import { logEvent } from './util/analytics';
+import { getCommands } from './util/commands';
+import { CONFIG_PREFIX, DISCORD_TOKEN, MONGO_URI, setBotId } from './util/config';
+import logger from './util/logger';
+import { Message } from './util/message';
 
 mongoose
     .connect(MONGO_URI, {

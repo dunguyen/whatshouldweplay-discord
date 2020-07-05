@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { LinkCommand } from '../../src/commands/link';
-import { Message } from '../../src/util/message';
 import * as Userlibrary from '../../src/models/userlibrary';
+import { Message } from '../../src/util/message';
 import * as Request from '../../src/util/request';
 
 jest.mock('../../src/util/message');

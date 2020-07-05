@@ -1,10 +1,10 @@
-import { ICommand } from '../types/ICommand';
-import { Message } from '../util/message';
-import { getCommonGames } from '../models/userlibrary';
-import { getCapitalizedString } from '../util/helpers';
-import { Genre } from '../util/genre';
-import { SortOptions } from '../util/sortoptions';
 import { Player } from '../models/player';
+import { getCommonGames } from '../models/userlibrary';
+import { ICommand } from '../types/ICommand';
+import { Genre } from '../util/genre';
+import { getCapitalizedString } from '../util/helpers';
+import { Message } from '../util/message';
+import { SortOptions } from '../util/sortoptions';
 
 export class PlayCommand implements ICommand {
     name = 'play';

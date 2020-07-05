@@ -1,12 +1,12 @@
-import { getCommands } from '../../src/util/commands';
+import { DeleteCommand } from '../../src/commands/delete';
 import { HelpCommand } from '../../src/commands/help';
-import { ShowLinkedCommand } from '../../src/commands/showlinked';
-import { UnlinkCommand } from '../../src/commands/unlink';
 import { LinkCommand } from '../../src/commands/link';
 import { PlayCommand } from '../../src/commands/play';
-import { UpdateLinkedCommand } from '../../src/commands/updatelinked';
 import { PruneCommand } from '../../src/commands/prune';
-import { DeleteCommand } from '../../src/commands/delete';
+import { ShowLinkedCommand } from '../../src/commands/showlinked';
+import { UnlinkCommand } from '../../src/commands/unlink';
+import { UpdateLinkedCommand } from '../../src/commands/updatelinked';
+import { getCommands } from '../../src/util/commands';
 
 describe('commands tests', () => {
     test('getCommands returns collection', () => {

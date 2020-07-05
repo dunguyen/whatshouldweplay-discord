@@ -1,11 +1,11 @@
-import { getDiscordUserModel } from './discorduser';
-import { getGameModel, GameDocument } from './game';
-import logger from '../util/logger';
-import { CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS, CONFIG_NUMBER_OF_GAMES_DISPLAYED } from '../util/config';
-import { getOwnedSteamGames, getSteamGamerTag } from '../util/request';
-import { Player } from './player';
-import { SortOptions } from '../util/sortoptions';
+import { CONFIG_NUMBER_OF_GAMES_DISPLAYED, CONFIG_USER_LIBRARY_UPDATE_INTERVAL_IN_DAYS } from '../util/config';
 import { getMedian } from '../util/helpers';
+import logger from '../util/logger';
+import { getOwnedSteamGames, getSteamGamerTag } from '../util/request';
+import { SortOptions } from '../util/sortoptions';
+import { getDiscordUserModel } from './discorduser';
+import { GameDocument, getGameModel } from './game';
+import { Player } from './player';
 
 const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();

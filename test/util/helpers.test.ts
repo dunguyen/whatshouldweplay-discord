@@ -1,4 +1,4 @@
-import { getMedian, getCapitalizedString } from '../../src/util/helpers';
+import { getCapitalizedString, getMedian } from '../../src/util/helpers';
 
 describe('helpers tests', () => {
     test('getMedian returns median', () => {

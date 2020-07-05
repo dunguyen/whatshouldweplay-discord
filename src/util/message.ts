@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import logger from './logger';
+
 import { updateUserGames } from '../models/userlibrary';
-import { resolve } from 'path';
+import logger from './logger';
 
 export class Message {
     discordMessage: Discord.Message;

@@ -1,7 +1,7 @@
-import { GameDocument, getGameModel } from './game';
 import { Genre } from '../util/genre';
-import { getSteamId, getOwnedSteamGames } from '../util/request';
+import { getOwnedSteamGames, getSteamId } from '../util/request';
 import { getDiscordUserModel } from './discorduser';
+import { GameDocument, getGameModel } from './game';
 
 const DiscordUserModel = getDiscordUserModel();
 const Game = getGameModel();

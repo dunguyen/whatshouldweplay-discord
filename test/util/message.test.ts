@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Message as DiscordMessage, User, TextChannel, DMChannel } from 'discord.js';
+import { DMChannel, Message as DiscordMessage, TextChannel, User } from 'discord.js';
+
 import { Message } from '../../src/util/message';
-import { generateKeyPairSync } from 'crypto';
 
 jest.mock('discord.js');
 
