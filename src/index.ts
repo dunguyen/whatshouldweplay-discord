@@ -7,7 +7,6 @@ import { getCommands } from './util/commands';
 import { CONFIG_PREFIX, DISCORD_TOKEN, MONGO_URI, setBotId } from './util/config';
 import logger from './util/logger';
 import { Message } from './util/message';
-import { logEvent } from './util/analytics';
 
 mongoose
     .connect(MONGO_URI, {
