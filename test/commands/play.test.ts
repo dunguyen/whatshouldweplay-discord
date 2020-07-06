@@ -322,16 +322,12 @@ describe('play command tests', () => {
 
         message.getOnlineGuildMemberIds = jest.fn(() => {
             return new Promise<string[]>((resolve) => {
-                resolve([]);
+                resolve(['dm user']);
             });
         });
 
         message.isGuild = jest.fn(() => {
             return false;
-        });
-
-        message.getAuthorId = jest.fn(() => {
-            return 'dm user';
         });
 
         message.getMentionIds = jest.fn(() => {
@@ -353,5 +349,43 @@ describe('play command tests', () => {
         expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(1);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Random);
+    });
+
+    test('wswp play @everyone @here test', async () => {
+        const playCommand = new PlayCommand();
+        const message = new Message(undefined);
+        const args: string[] = ['@everyone', '@here', 'test'];
+
+        message.getOnlineGuildMemberIds = jest.fn(() => {
+            return new Promise<string[]>((resolve) => {
+                resolve([]);
+            });
+        });
+
+        message.getMentionIds = jest.fn(() => {
+            return [];
+        });
+
+        message.isGuild = jest.fn(() => {
+            return true;
+        });
+
+        Player.prototype.populateGames = (genre?) => {
+            return new Promise<void>((resolve) => {
+                resolve();
+            });
+        };
+
+        jest.spyOn(Player.prototype, 'populateGames');
+
+        Player.prototype.hasGames = () => {
+            return true;
+        };
+
+        await playCommand.execute(message, args);
+        expect(message.sendToChannel).toBeCalledTimes(1);
+        expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
+        expect(Player.prototype.populateGames).toHaveBeenCalledWith(undefined);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(1);
     });
 });

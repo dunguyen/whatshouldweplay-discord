@@ -50,7 +50,7 @@ export class Message {
     async getOnlineGuildMemberIds(): Promise<string[]> {
         if (!this.isGuild()) {
             return new Promise<string[]>((resolve) => {
-                resolve([]);
+                resolve([this.getAuthorId()]);
             });
         }
 

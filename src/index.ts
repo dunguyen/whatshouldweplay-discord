@@ -44,6 +44,11 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
+    if (message.mentions.has(client.user)) {
+        message.reply('Hi! Trying typing `wswp help` to find out what I can do!');
+        return;
+    }
+
     if ((!message.content.toLowerCase().startsWith(CONFIG_PREFIX) && message.guild) || message.author.bot) {
         return;
     }

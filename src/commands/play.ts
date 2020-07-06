@@ -33,12 +33,15 @@ export class PlayCommand implements ICommand {
             sort = SortOptions.Random;
         }
 
-        const discordIds: string[] = [];
-        const guildDiscordIds = await message.getOnlineGuildMemberIds();
-        discordIds.push(...guildDiscordIds);
+        args = args.filter((arg) => {
+            return ['@everyone', '@here'].includes(arg) ? false : true;
+        });
 
-        if (args.length === 0 && !message.isGuild()) {
-            discordIds.push(message.getAuthorId());
+        const discordIds: string[] = [];
+        if (args.length === 0) {
+            const guildDiscordIds = await message.getOnlineGuildMemberIds();
+            discordIds.push(...guildDiscordIds);
+            messages.push('Checking all online members...');
         }
 
         discordIds.push(...message.getMentionIds());
