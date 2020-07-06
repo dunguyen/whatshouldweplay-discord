@@ -193,6 +193,7 @@ describe('link command tests', () => {
             .spyOn(Request, 'getSteamGamerTag')
             .mockImplementation((id) => {
                 return new Promise((resolve) => {
+
                     resolve({ success: true, steamGamerTag: 'gamertag' });
                 });
             })
