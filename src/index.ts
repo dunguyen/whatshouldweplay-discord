@@ -2,11 +2,11 @@ import * as Discord from 'discord.js';
 import mongoose from 'mongoose';
 
 import { getGameModel } from './models/game';
-import { DISCORD_TOKEN, MONGO_URI, CONFIG_PREFIX, setBotId } from './util/config';
-import logger from './util/logger';
-import { getCommands } from './util/commands';
-import { Message } from './util/message';
 import { logEvent } from './util/analytics';
+import { getCommands } from './util/commands';
+import { CONFIG_PREFIX, DISCORD_TOKEN, MONGO_URI, setBotId } from './util/config';
+import logger from './util/logger';
+import { Message } from './util/message';
 
 mongoose
     .connect(MONGO_URI, {
@@ -44,19 +44,24 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-    if ((!message.content.startsWith(CONFIG_PREFIX) && message.guild) || message.author.bot) {
+    if (message.mentions.has(client.user)) {
+        message.reply('Hi! Trying typing `wswp help` to find out what I can do!');
+        return;
+    }
+
+    if ((!message.content.toLowerCase().startsWith(CONFIG_PREFIX) && message.guild) || message.author.bot) {
         return;
     }
 
     const args =
-        message.content.split(/ +/)[0] === CONFIG_PREFIX
-            ? message.content.split(/ +/).slice(1)
-            : message.content.split(/ +/);
+        message.content.split(/ +/)[0].toLowerCase() === CONFIG_PREFIX
+            ? message.content.toLowerCase().split(/ +/).slice(1)
+            : message.content.toLowerCase().split(/ +/);
 
     if (!args.length) {
         args.splice(0, 0, 'play');
     }
-    let commandName = args[0].toLowerCase();
+    let commandName = args[0];
 
     if (!commands.has(commandName)) {
         commandName = 'play';
