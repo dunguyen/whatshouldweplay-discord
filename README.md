@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.com/dunguyen/whatshouldweplay-discord.svg?branch=develop)](https://travis-ci.com/dunguyen/whatshouldweplay-discord)
 [![Coverage Status](https://coveralls.io/repos/github/dunguyen/whatshouldweplay-discord/badge.svg)](https://coveralls.io/github/dunguyen/whatshouldweplay-discord)
 
-What Should We Play is a Discord bot that can return a list of multi-player games that people on Steam have in common.
+Ever tried to get your friends to play a game but there's always someone who doesn't have it? Or tired of just playing CS:GO for the 8th night in the row? What Should We Play can provide you inspiration for your next multiplayer session.
+
+The bot is easy to use. Simply type `wswp play` followed by steam ids and it will return a list of common owned multi-player games on the steam accounts.
 
 Get it here: [Invite Link](https://discord.com/oauth2/authorize?client_id=710051076908515333&permissions=207872&scope=bot)
 
