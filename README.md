@@ -7,7 +7,7 @@ Ever tried to get your friends to play a game but there's always someone who doe
 
 The bot is easy to use. Simply type `wswp play` followed by steam ids and it will return a list of common owned multi-player games on the steam accounts.
 
-Get it here: [Invite Link](https://discord.com/oauth2/authorize?client_id=710051076908515333&permissions=207872&scope=bot)
+Get it here: [Invite Link](https://discord.com/oauth2/authorize?client_id=710051076908515333&permissions=207872&scope=bot) or on [top.gg](https://top.gg/bot/710051076908515333)
 
 ## Usage
 
