@@ -44,7 +44,7 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-    if (message.mentions.has(client.user)) {
+    if (!message.mentions.everyone && message.mentions.has(client.user)) {
         message.reply('Hi! Trying typing `wswp help` to find out what I can do!');
         return;
     }
