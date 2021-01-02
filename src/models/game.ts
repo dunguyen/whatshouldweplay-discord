@@ -88,7 +88,7 @@ const gameSchema = new mongoose.Schema(
 
 let Game: Model<GameDocument>;
 
-export const getGameModel = (): mongoose.Model<GameDocument, {}> => {
+export const getGameModel = (): mongoose.Model<GameDocument> => {
     try {
         Game = mongoose.model<GameDocument>('Game', gameSchema);
     } catch (e) {

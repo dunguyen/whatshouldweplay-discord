@@ -6,7 +6,6 @@ import { SortOptions } from '../util/sortoptions';
 import { getDiscordUserModel } from './discorduser';
 import { GameDocument, getGameModel } from './game';
 import { Player } from './player';
-import { release } from 'os';
 
 const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();
@@ -61,7 +60,7 @@ export const linkSteamGames = async function (
         rawResult: true,
     });
 
-    if (result.ok) {
+    if (!result.errors) {
         return { success: true, error: '' };
     } else {
         logger.error(result);
@@ -164,7 +163,7 @@ export const getCommonGames = function (players: Player[], sort?: SortOptions): 
         threshold -= 0.1;
     }
 
-    const gameList = games
+    let gameList = games
         .filter((gameData) => {
             if (gameData.owned.length / players.length >= threshold) {
                 return true;
@@ -203,11 +202,15 @@ export const getCommonGames = function (players: Player[], sort?: SortOptions): 
             gameList.sort((a, b) => b.score - a.score);
             break;
         case SortOptions.Random:
+            gameList = gameList.filter((game) => {
+                return game.numberOwned > 1;
+            });
             gameList.sort((a, b) => 0.5 - Math.random());
             break;
         case SortOptions.Release:
             gameList.sort((a, b) => b.release.getTime() - a.release.getTime());
             break;
+        case SortOptions.Default:
         default:
             gameList.sort((a, b) => b.numberOwned - a.numberOwned);
             break;
