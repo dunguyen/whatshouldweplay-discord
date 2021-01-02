@@ -55,7 +55,7 @@ describe('play command tests', () => {
         expect(message.sendToChannel).toBeCalledTimes(1);
         expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(2);
-        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Random);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Default);
     });
 
     test('wswp play - nobody online', async () => {
@@ -125,7 +125,7 @@ describe('play command tests', () => {
         expect(message.sendToChannel).toBeCalledTimes(1);
         expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(2);
-        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Random);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Default);
     });
 
     test('wswp play @test test - nobody has games', async () => {
@@ -198,7 +198,7 @@ describe('play command tests', () => {
         expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
         expect(Player.prototype.populateGames).toHaveBeenCalledWith(Genre.Action);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(2);
-        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Random);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Default);
     });
 
     test('wswp play playtime test @test', async () => {
@@ -237,10 +237,10 @@ describe('play command tests', () => {
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Playtime);
     });
 
-    test('wswp play strategy playtime test @test', async () => {
+    test('wswp play strategy random test @test', async () => {
         const playCommand = new PlayCommand();
         const message = new Message(undefined);
-        const args: string[] = ['strategy', 'playtime', '<@!test>', 'test'];
+        const args: string[] = ['strategy', 'random', '<@!test>', 'test'];
 
         message.getOnlineGuildMemberIds = jest.fn(() => {
             return new Promise<string[]>((resolve) => {
@@ -273,7 +273,7 @@ describe('play command tests', () => {
         expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
         expect(Player.prototype.populateGames).toHaveBeenCalledWith(Genre.Strategy);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(2);
-        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Playtime);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Random);
     });
 
     test('wswp play playtime action test @test', async () => {
@@ -348,7 +348,7 @@ describe('play command tests', () => {
         expect(message.sendToChannel).toBeCalledTimes(1);
         expect(UserLibrary.getCommonGames).toHaveBeenCalledTimes(1);
         expect(mockedUserLibrary.getCommonGames.mock.calls[0][0]).toHaveLength(1);
-        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Random);
+        expect(mockedUserLibrary.getCommonGames.mock.calls[0][1]).toBe(SortOptions.Default);
     });
 
     test('wswp play @everyone @here test', async () => {
