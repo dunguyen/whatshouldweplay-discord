@@ -6,7 +6,6 @@ import { SortOptions } from '../util/sortoptions';
 import { getDiscordUserModel } from './discorduser';
 import { GameDocument, getGameModel } from './game';
 import { Player } from './player';
-import { release } from 'os';
 
 const DiscordUserModel = getDiscordUserModel();
 const GameModel = getGameModel();
@@ -61,7 +60,7 @@ export const linkSteamGames = async function (
         rawResult: true,
     });
 
-    if (result.ok) {
+    if (!result.errors) {
         return { success: true, error: '' };
     } else {
         logger.error(result);

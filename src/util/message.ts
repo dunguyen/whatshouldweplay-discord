@@ -9,7 +9,7 @@ export class Message {
         this.discordMessage = discordMessage;
     }
 
-    reply(message: string | string[]): Promise<Discord.Message> {
+    reply(message: string | string[]): Promise<Discord.Message[]> {
         return this.discordMessage.reply(message, { split: true });
     }
 
@@ -28,7 +28,7 @@ export class Message {
         }
     }
 
-    sendToChannel(message: string | string[]): Promise<Discord.Message> {
+    sendToChannel(message: string | string[]): Promise<Discord.Message[]> {
         return this.discordMessage.channel.send(message, { split: true });
     }
 

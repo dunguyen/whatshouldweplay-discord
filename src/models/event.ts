@@ -30,7 +30,7 @@ const EventSchema = new mongoose.Schema(
 
 let Event: Model<EventDocument>;
 
-export const getEventModel = (): mongoose.Model<EventDocument, {}> => {
+export const getEventModel = (): mongoose.Model<EventDocument> => {
     try {
         Event = mongoose.model<EventDocument>('Event', EventSchema);
     } catch (e) {
