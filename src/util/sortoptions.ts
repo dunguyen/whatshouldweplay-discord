@@ -3,4 +3,5 @@ export enum SortOptions {
     Score = 'Score',
     Random = 'Random',
     Release = 'Release',
+    Default = 'Default',
 }

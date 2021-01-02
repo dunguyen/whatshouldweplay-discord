@@ -30,7 +30,7 @@ export class PlayCommand implements ICommand {
             sort = SortOptions[getCapitalizedString(args[0])];
             args.shift();
         } else {
-            sort = SortOptions.Random;
+            sort = SortOptions.Default;
         }
 
         args = args.filter((arg) => {
