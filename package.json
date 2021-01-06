@@ -45,7 +45,7 @@
         "typescript": "^3.9.7"
     },
     "dependencies": {
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "discord.js": "^12.5.1",
         "dotenv": "^8.2.0",
         "mongoose": "^5.11.9",
