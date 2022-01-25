@@ -45,10 +45,10 @@
         "typescript": "^3.9.7"
     },
     "dependencies": {
-        "axios": "^0.19.2",
+        "axios": "^0.21.3",
         "discord.js": "^12.5.1",
         "dotenv": "^8.2.0",
-        "mongoose": "^5.11.9",
+        "mongoose": "^5.13.9",
         "winston": "^3.3.3"
     }
 }
