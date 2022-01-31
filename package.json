@@ -49,6 +49,6 @@
         "discord.js": "^12.5.1",
         "dotenv": "^8.2.0",
         "mongoose": "^5.13.9",
-        "winston": "^3.3.3"
+        "winston": "^3.3.4"
     }
 }
