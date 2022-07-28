@@ -48,7 +48,7 @@
         "axios": "^0.21.3",
         "discord.js": "^12.5.1",
         "dotenv": "^8.2.0",
-        "mongoose": "^5.13.9",
+        "mongoose": "^6.4.6",
         "winston": "^3.3.3"
     }
 }
